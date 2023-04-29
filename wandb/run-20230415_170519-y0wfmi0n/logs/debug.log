@@ -1,0 +1,27 @@
+2023-04-15 17:05:19,068 INFO    MainThread:6924 [wandb_setup.py:_flush():76] Configure stats pid to 6924
+2023-04-15 17:05:19,068 INFO    MainThread:6924 [wandb_setup.py:_flush():76] Loading settings from C:\Users\h4rip\.config\wandb\settings
+2023-04-15 17:05:19,068 INFO    MainThread:6924 [wandb_setup.py:_flush():76] Loading settings from D:\projects\masters_thesis\v_2\wandb\settings
+2023-04-15 17:05:19,068 INFO    MainThread:6924 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-04-15 17:05:19,068 INFO    MainThread:6924 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-04-15 17:05:19,068 INFO    MainThread:6924 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'playground.py', 'program': 'D:\\projects\\masters_thesis\\v_2\\playground.py'}
+2023-04-15 17:05:19,068 INFO    MainThread:6924 [wandb_init.py:_log_setup():507] Logging user logs to D:\projects\masters_thesis\v_2\wandb\run-20230415_170519-y0wfmi0n\logs\debug.log
+2023-04-15 17:05:19,069 INFO    MainThread:6924 [wandb_init.py:_log_setup():508] Logging internal logs to D:\projects\masters_thesis\v_2\wandb\run-20230415_170519-y0wfmi0n\logs\debug-internal.log
+2023-04-15 17:05:19,069 INFO    MainThread:6924 [wandb_init.py:init():547] calling init triggers
+2023-04-15 17:05:19,069 INFO    MainThread:6924 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {'exp_name': 'playground', 'gym_id': 'CartPole-v1', 'learning_rate': 0.00025, 'seed': 1, 'total_timesteps': 25000, 'torch_det': True, 'cuda': True, 'track': True, 'wandb_project_name': 'cleanRL', 'wandb_entity': None}
+2023-04-15 17:05:19,069 INFO    MainThread:6924 [wandb_init.py:init():595] starting backend
+2023-04-15 17:05:19,069 INFO    MainThread:6924 [wandb_init.py:init():599] setting up manager
+2023-04-15 17:05:19,072 INFO    MainThread:6924 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn, using: spawn
+2023-04-15 17:05:19,077 INFO    MainThread:6924 [wandb_init.py:init():605] backend started and connected
+2023-04-15 17:05:19,080 INFO    MainThread:6924 [wandb_init.py:init():695] updated telemetry
+2023-04-15 17:05:19,081 INFO    MainThread:6924 [wandb_init.py:init():732] communicating run to backend with 60.0 second timeout
+2023-04-15 17:05:19,975 INFO    MainThread:6924 [wandb_run.py:_on_init():2176] communicating current version
+2023-04-15 17:05:20,513 INFO    MainThread:6924 [wandb_run.py:_on_init():2185] got version response 
+2023-04-15 17:05:20,513 INFO    MainThread:6924 [wandb_init.py:init():782] starting run threads in backend
+2023-04-15 17:05:25,437 INFO    MainThread:6924 [wandb_run.py:_console_start():2157] atexit reg
+2023-04-15 17:05:25,437 INFO    MainThread:6924 [wandb_run.py:_redirect():2012] redirect: 3
+2023-04-15 17:05:25,438 INFO    MainThread:6924 [wandb_run.py:_redirect():2077] Wrapping output streams.
+2023-04-15 17:05:25,438 INFO    MainThread:6924 [wandb_run.py:_redirect():2102] Redirects installed.
+2023-04-15 17:05:25,438 INFO    MainThread:6924 [wandb_init.py:init():824] run started, returning control to user process
+2023-04-15 17:05:25,439 INFO    MainThread:6924 [wandb_run.py:_tensorboard_callback():1432] tensorboard callback: runs/CartPole-v1__playground__1__1681558516, True
+2023-04-15 17:05:53,403 WARNING MsgRouterThr:6924 [router.py:message_loop():77] message_loop has been closed

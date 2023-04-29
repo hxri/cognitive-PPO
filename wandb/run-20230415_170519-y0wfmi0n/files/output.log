@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "D:\projects\masters_thesis\v_2\playground.py", line 81, in <module>
+    wandb.log(writer)
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\wandb_run.py", line 393, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\wandb_run.py", line 344, in wrapper_fn
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\wandb_run.py", line 334, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\wandb_run.py", line 1750, in log
+    self._log(data=data, step=step, commit=commit)
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\wandb_run.py", line 1526, in _log
+    raise ValueError("wandb.log must be passed a dictionary")
+ValueError: wandb.log must be passed a dictionary

@@ -1,0 +1,59 @@
+2023-04-15 17:02:31,423 INFO    StreamThr :25416 [internal.py:wandb_internal():86] W&B internal server running at pid: 25416, started at: 2023-04-15 17:02:31.422190
+2023-04-15 17:02:31,424 DEBUG   HandlerThread:25416 [handler.py:handle_request():144] handle_request: status
+2023-04-15 17:02:31,427 INFO    WriterThread:25416 [datastore.py:open_for_write():85] open: D:\projects\masters_thesis\v_2\wandb\run-20230415_170231-c95m0nc5\run-c95m0nc5.wandb
+2023-04-15 17:02:31,427 DEBUG   SenderThread:25416 [sender.py:send():375] send: header
+2023-04-15 17:02:31,428 DEBUG   SenderThread:25416 [sender.py:send():375] send: run
+2023-04-15 17:02:32,251 ERROR   SenderThread:25416 [internal_api.py:execute():288] 404 response executing GraphQL.
+2023-04-15 17:02:32,252 ERROR   SenderThread:25416 [internal_api.py:execute():289] {"errors":[{"message":"entity qpochlabs not found during upsertBucket","path":["upsertBucket"]}],"data":{"upsertBucket":null}}
+2023-04-15 17:02:32,256 ERROR   SenderThread:25416 [sender.py:send_run():979] It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+Traceback (most recent call last):
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\lib\retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\internal\internal_api.py", line 285, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\vendor\gql-0.2.0\wandb_gql\client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\vendor\gql-0.2.0\wandb_gql\client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\lib\gql_request.py", line 56, in execute
+    request.raise_for_status()
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\requests\models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\internal\sender.py", line 977, in send_run
+    self._init_run(run, config_value_dict)
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\internal\sender.py", line 1015, in _init_run
+    server_run, inserted, server_messages = self._api.upsert_run(
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\apis\normalize.py", line 73, in wrapper
+    raise err
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\apis\normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\internal\internal_api.py", line 1690, in upsert_run
+    response = self.gql(
+               ^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\internal\internal_api.py", line 257, in gql
+    ret = self._retry_gql(
+          ^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\sdk\lib\retry.py", line 147, in __call__
+    retry_timedelta_triggered = check_retry_fn(e)
+                                ^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\util.py", line 950, in check_retry_fn
+    return fallback_retry_fn(e)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\wandb\util.py", line 892, in no_retry_auth
+    raise CommError(
+wandb.errors.CommError: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 404: Not Found)
+2023-04-15 17:02:32,659 DEBUG   HandlerThread:25416 [handler.py:handle_request():144] handle_request: shutdown
+2023-04-15 17:02:32,659 INFO    HandlerThread:25416 [handler.py:finish():845] shutting down handler
+2023-04-15 17:02:33,270 INFO    SenderThread:25416 [sender.py:finish():1550] shutting down sender
+2023-04-15 17:02:33,444 INFO    WriterThread:25416 [datastore.py:close():298] close: D:\projects\masters_thesis\v_2\wandb\run-20230415_170231-c95m0nc5\run-c95m0nc5.wandb

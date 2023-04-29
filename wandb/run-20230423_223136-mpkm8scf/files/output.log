@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "D:\projects\masters_thesis\v_2\playground_with_emotion.py", line 254, in <module>
+    agent = Agent(envs).to(device)
+            ^^^^^^^^^^^
+  File "D:\projects\masters_thesis\v_2\playground_with_emotion.py", line 55, in __init__
+    layer_inint(nn.Linear(np.array(envs.single_observation_space.shape).prod() + envs.num_emotions, 64)),
+                                                                                 ^^^^^^^^^^^^^^^^^
+AttributeError: 'SyncVectorEnv' object has no attribute 'num_emotions'

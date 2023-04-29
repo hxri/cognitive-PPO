@@ -1,0 +1,15 @@
+C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\gym\wrappers\record_video.py:75: UserWarning: [33mWARN: Overwriting existing videos at D:\projects\masters_thesis\v_2\videos folder (try specifying a different `video_folder` for the `RecordVideo` wrapper if this is not desired)
+  logger.warn(
+C:\Users\h4rip\anaconda3\envs\thesis_2\Lib\site-packages\gym\utils\passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+Moviepy - Building video D:\projects\masters_thesis\v_2\videos\rl-video-episode-0.mp4.
+Moviepy - Writing video D:\projects\masters_thesis\v_2\videos\rl-video-episode-0.mp4
+Moviepy - Done !
+Moviepy - video ready D:\projects\masters_thesis\v_2\videos\rl-video-episode-0.mp4
+Episodic return: 18.0
+Episodic return: 21.0
+Episodic return: 13.0
+Episodic return: 26.0
+Episodic return: 16.0
+Episodic return: 40.0
+Episodic return: 56.0

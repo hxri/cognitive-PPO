@@ -1,0 +1,45 @@
+{
+    "os": "Windows-10-10.0.19044-SP0",
+    "python": "3.11.3",
+    "heartbeatAt": "2023-05-01T09:39:50.840903",
+    "startedAt": "2023-05-01T09:39:49.709002",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--capture-video",
+        "--track"
+    ],
+    "state": "running",
+    "program": "D:\\Masters\\Projects\\thesis\\cognitive-PPO\\playground.py",
+    "codePath": "playground.py",
+    "git": {
+        "remote": "https://github.com/hxri/cognitive-PPO.git",
+        "commit": "48a4b8d2116569558768003e21eee28c20a504cf"
+    },
+    "email": "h4ri.prasad@gmail.com",
+    "root": "D:/Masters/Projects/thesis/cognitive-PPO",
+    "host": "DESKTOP-DD9PFKK",
+    "username": "hxri",
+    "executable": "C:\\Users\\hxri\\miniconda3\\envs\\cogppo\\python.exe",
+    "cpu_count": 2,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 2201.0,
+        "min": 0.0,
+        "max": 2201.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2201.0,
+            "min": 0.0,
+            "max": 2201.0
+        }
+    ],
+    "disk": {
+        "total": 23.569332122802734,
+        "used": 15.999073028564453
+    },
+    "memory": {
+        "total": 7.9164581298828125
+    }
+}

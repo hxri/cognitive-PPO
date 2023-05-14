@@ -1,0 +1,180 @@
+SPS:  99
+SPS:  154
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-0.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-0.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-0.mp4
+global_step=1296, episodic_return=[0.]
+SPS:  179
+D:\Masters\Projects\thesis\cognitive-PPO\playground_gridworld_appraisal.py:299: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  next_appraisal = torch.tensor(agent.get_appraisal(next_obs).unsqueeze(1))
+D:\Masters\Projects\thesis\cognitive-PPO\playground_gridworld_appraisal.py:101: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  napp = torch.tensor(certainity(logits).unsqueeze(1))
+D:\Masters\Projects\thesis\cognitive-PPO\playground_gridworld_appraisal.py:92: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  napp = torch.tensor(certainity(cr).unsqueeze(1))
+SPS:  211
+SPS:  237
+global_step=2592, episodic_return=[0.]
+SPS:  258
+SPS:  276
+global_step=3888, episodic_return=[0.]
+SPS:  290
+SPS:  299
+global_step=5088, episodic_return=[0.16666667]
+SPS:  307
+global_step=5184, episodic_return=[0.]
+SPS:  316
+SPS:  325
+global_step=6384, episodic_return=[0.]
+global_step=6480, episodic_return=[0.]
+SPS:  332
+SPS:  338
+global_step=7680, episodic_return=[0.]
+SPS:  344
+global_step=7776, episodic_return=[0.]
+SPS:  347
+SPS:  352
+global_step=8976, episodic_return=[0.]
+global_step=9032, episodic_return=[0.12777779]
+global_step=9072, episodic_return=[0.]
+SPS:  353
+SPS:  353
+SPS:  355
+global_step=10272, episodic_return=[0.]
+global_step=10328, episodic_return=[0.]
+global_step=10368, episodic_return=[0.]
+SPS:  359
+SPS:  363
+global_step=11568, episodic_return=[0.]
+global_step=11624, episodic_return=[0.]
+global_step=11664, episodic_return=[0.]
+SPS:  365
+SPS:  368
+SPS:  371
+global_step=12864, episodic_return=[0.]
+global_step=12920, episodic_return=[0.]
+global_step=12960, episodic_return=[0.]
+SPS:  371
+global_step=13540, episodic_return=[0.5972222]
+SPS:  371
+global_step=14160, episodic_return=[0.]
+global_step=14216, episodic_return=[0.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-10.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-10.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-10.mp4
+global_step=14256, episodic_return=[0.]
+SPS:  362
+global_step=14836, episodic_return=[0.]
+SPS:  363
+SPS:  366
+global_step=15456, episodic_return=[0.]
+global_step=15512, episodic_return=[0.]
+global_step=15552, episodic_return=[0.]
+SPS:  367
+global_step=16132, episodic_return=[0.]
+global_step=16344, episodic_return=[0.45]
+SPS:  369
+global_step=16752, episodic_return=[0.]
+global_step=16808, episodic_return=[0.]
+SPS:  371
+SPS:  373
+global_step=17428, episodic_return=[0.]
+global_step=17640, episodic_return=[0.]
+global_step=17820, episodic_return=[0.25833333]
+SPS:  374
+global_step=18104, episodic_return=[0.]
+SPS:  376
+global_step=18724, episodic_return=[0.]
+global_step=18884, episodic_return=[0.8888889]
+global_step=18936, episodic_return=[0.]
+SPS:  377
+global_step=19116, episodic_return=[0.]
+global_step=19192, episodic_return=[0.7861111]
+global_step=19400, episodic_return=[0.]
+SPS:  377
+global_step=19660, episodic_return=[0.8194444]
+SPS:  378
+global_step=20232, episodic_return=[0.]
+global_step=20412, episodic_return=[0.]
+SPS:  379
+global_step=20488, episodic_return=[0.]
+global_step=20556, episodic_return=[0.37777779]
+SPS:  381
+SPS:  382
+global_step=21528, episodic_return=[0.]
+global_step=21708, episodic_return=[0.]
+global_step=21784, episodic_return=[0.]
+global_step=21852, episodic_return=[0.]
+SPS:  383
+global_step=22312, episodic_return=[0.6805556]
+SPS:  384
+global_step=22584, episodic_return=[0.8111111]
+global_step=22824, episodic_return=[0.]
+global_step=23004, episodic_return=[0.]
+SPS:  385
+global_step=23080, episodic_return=[0.]
+global_step=23412, episodic_return=[0.425]
+SPS:  386
+global_step=23584, episodic_return=[0.4722222]
+SPS:  387
+global_step=24288, episodic_return=[0.10833333]
+global_step=24376, episodic_return=[0.]
+SPS:  386
+global_step=24612, episodic_return=[0.28611112]
+global_step=24708, episodic_return=[0.]
+SPS:  384
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-20.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-20.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-SimpleCrossingS9N1-v0__playground_gridworld_appraisal__1__1683035107\rl-video-episode-20.mp4
+Traceback (most recent call last):
+  File "D:\Masters\Projects\thesis\cognitive-PPO\playground_gridworld_appraisal.py", line 323, in <module>
+    next_obs, reward, terminated, truncated, info = envs.step(action.cpu().numpy())
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\gymnasium\vector\vector_env.py", line 203, in step
+    return self.step_wait()
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\gymnasium\vector\sync_vector_env.py", line 149, in step_wait
+    ) = env.step(action)
+        ^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\gymnasium\wrappers\record_video.py", line 180, in step
+    self.close_video_recorder()
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\gymnasium\wrappers\record_video.py", line 193, in close_video_recorder
+    self.video_recorder.close()
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\integration\gym\__init__.py", line 71, in close
+    wandb.log({key: wandb.Video(getattr(self, path))})
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\wandb_run.py", line 393, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\wandb_run.py", line 344, in wrapper_fn
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\wandb_run.py", line 334, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\wandb_run.py", line 1750, in log
+    self._log(data=data, step=step, commit=commit)
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\wandb_run.py", line 1531, in _log
+    self._partial_history_callback(data, step, commit)
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\wandb_run.py", line 1401, in _partial_history_callback
+    self._backend.interface.publish_partial_history(
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\interface\interface.py", line 567, in publish_partial_history
+    data = history_dict_to_json(run, data, step=user_step, ignore_copy_err=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\data_types\utils.py", line 52, in history_dict_to_json
+    payload[key] = val_to_json(
+                   ^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\data_types\utils.py", line 162, in val_to_json
+    val.bind_to_run(run, key, namespace)
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\data_types\base_types\media.py", line 139, in bind_to_run
+    shutil.copy(self._path, new_path)
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\shutil.py", line 419, in copy
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\shutil.py", line 241, in copyfile
+    st = _stat(fn)
+         ^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\shutil.py", line 221, in _stat
+    return fn.stat() if isinstance(fn, os.DirEntry) else os.stat(fn)
+                                                         ^^^^^^^^^^^
+KeyboardInterrupt

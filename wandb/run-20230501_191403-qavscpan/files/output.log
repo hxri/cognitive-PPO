@@ -1,0 +1,448 @@
+global_step=8, episodic_return=[-1.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-0.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-0.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-0.mp4
+global_step=16, episodic_return=[-1.]
+global_step=36, episodic_return=[-1.]
+global_step=44, episodic_return=[-1.]
+global_step=64, episodic_return=[-1.]
+global_step=104, episodic_return=[-1.]
+global_step=152, episodic_return=[-1.]
+global_step=160, episodic_return=[-1.]
+global_step=180, episodic_return=[-1.]
+global_step=188, episodic_return=[-1.]
+global_step=216, episodic_return=[-1.]
+global_step=224, episodic_return=[-1.]
+global_step=232, episodic_return=[-1.]
+global_step=256, episodic_return=[-1.]
+global_step=260, episodic_return=[-1.]
+global_step=280, episodic_return=[-1.]
+global_step=284, episodic_return=[-1.]
+global_step=340, episodic_return=[-1.]
+global_step=356, episodic_return=[-1.]
+global_step=360, episodic_return=[-1.]
+global_step=400, episodic_return=[-1.]
+global_step=508, episodic_return=[-1.]
+global_step=512, episodic_return=[-1.]
+SPS:  85
+global_step=528, episodic_return=[-1.]
+global_step=552, episodic_return=[-1.]
+global_step=560, episodic_return=[-1.]
+global_step=604, episodic_return=[-1.]
+global_step=612, episodic_return=[-1.]
+global_step=628, episodic_return=[-1.]
+global_step=660, episodic_return=[-1.]
+global_step=684, episodic_return=[-1.]
+global_step=692, episodic_return=[-1.]
+global_step=696, episodic_return=[-1.]
+global_step=712, episodic_return=[-1.]
+global_step=720, episodic_return=[-1.]
+global_step=736, episodic_return=[-1.]
+global_step=760, episodic_return=[-1.]
+global_step=768, episodic_return=[-1.]
+global_step=784, episodic_return=[-1.]
+global_step=808, episodic_return=[-1.]
+global_step=836, episodic_return=[-1.]
+global_step=864, episodic_return=[-1.]
+global_step=900, episodic_return=[-1.]
+global_step=920, episodic_return=[-1.]
+global_step=940, episodic_return=[-1.]
+global_step=968, episodic_return=[-1.]
+global_step=980, episodic_return=[-1.]
+global_step=1008, episodic_return=[-1.]
+global_step=1016, episodic_return=[-1.]
+SPS:  131
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-10.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-10.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-10.mp4
+global_step=1040, episodic_return=[-1.]
+global_step=1048, episodic_return=[-1.]
+global_step=1052, episodic_return=[-1.]
+global_step=1064, episodic_return=[-1.]
+global_step=1072, episodic_return=[-1.]
+global_step=1152, episodic_return=[-1.]
+global_step=1160, episodic_return=[-1.]
+global_step=1168, episodic_return=[-1.]
+global_step=1212, episodic_return=[-1.]
+global_step=1224, episodic_return=[-1.]
+global_step=1256, episodic_return=[-1.]
+global_step=1264, episodic_return=[-1.]
+global_step=1356, episodic_return=[-1.]
+global_step=1360, episodic_return=[-1.]
+global_step=1416, episodic_return=[-1.]
+global_step=1464, episodic_return=[-1.]
+global_step=1500, episodic_return=[-1.]
+global_step=1528, episodic_return=[-1.]
+global_step=1536, episodic_return=[-1.]
+SPS:  149
+global_step=1712, episodic_return=[-1.]
+global_step=1792, episodic_return=[-1.]
+global_step=1840, episodic_return=[-1.]
+global_step=1872, episodic_return=[-1.]
+global_step=1908, episodic_return=[-1.]
+global_step=2008, episodic_return=[-1.]
+global_step=2012, episodic_return=[-1.]
+SPS:  164
+global_step=2072, episodic_return=[-1.]
+global_step=2204, episodic_return=[-1.]
+global_step=2276, episodic_return=[-1.]
+global_step=2432, episodic_return=[-1.]
+SPS:  177
+global_step=2684, episodic_return=[-1.]
+global_step=2952, episodic_return=[-1.]
+global_step=2996, episodic_return=[-1.]
+SPS:  189
+global_step=3188, episodic_return=[-1.]
+global_step=3200, episodic_return=[-1.]
+global_step=3464, episodic_return=[-1.]
+global_step=3492, episodic_return=[-1.]
+global_step=3536, episodic_return=[-1.]
+global_step=3544, episodic_return=[-1.]
+global_step=3560, episodic_return=[-1.]
+SPS:  196
+global_step=3608, episodic_return=[-1.]
+global_step=3696, episodic_return=[-1.]
+global_step=3708, episodic_return=[0.]
+global_step=3728, episodic_return=[-1.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-20.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-20.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-20.mp4
+global_step=3820, episodic_return=[-1.]
+global_step=4056, episodic_return=[-1.]
+SPS:  190
+global_step=4316, episodic_return=[-1.]
+global_step=4408, episodic_return=[-1.]
+global_step=4420, episodic_return=[-1.]
+global_step=4460, episodic_return=[-1.]
+SPS:  197
+global_step=4720, episodic_return=[0.]
+global_step=4752, episodic_return=[0.]
+global_step=4864, episodic_return=[-1.]
+global_step=5012, episodic_return=[-1.]
+SPS:  205
+global_step=5484, episodic_return=[0.]
+SPS:  214
+global_step=5736, episodic_return=[-1.]
+global_step=5744, episodic_return=[0.]
+global_step=6036, episodic_return=[0.]
+global_step=6104, episodic_return=[-1.]
+SPS:  218
+global_step=6352, episodic_return=[-1.]
+global_step=6508, episodic_return=[0.]
+global_step=6560, episodic_return=[-1.]
+global_step=6612, episodic_return=[-1.]
+SPS:  223
+global_step=6760, episodic_return=[0.]
+global_step=7152, episodic_return=[-1.]
+SPS:  227
+global_step=7236, episodic_return=[-1.]
+global_step=7376, episodic_return=[0.]
+global_step=7584, episodic_return=[0.]
+global_step=7644, episodic_return=[-1.]
+SPS:  229
+global_step=7784, episodic_return=[0.]
+global_step=7900, episodic_return=[-1.]
+SPS:  231
+global_step=8204, episodic_return=[-1.]
+global_step=8260, episodic_return=[0.]
+global_step=8608, episodic_return=[0.]
+global_step=8668, episodic_return=[0.]
+SPS:  237
+SPS:  242
+global_step=9228, episodic_return=[0.]
+global_step=9284, episodic_return=[0.]
+global_step=9316, episodic_return=[-1.]
+global_step=9368, episodic_return=[-1.]
+global_step=9692, episodic_return=[0.]
+SPS:  246
+SPS:  247
+global_step=10252, episodic_return=[0.]
+t:  42%|██████████████████████████████████████▎                                                     | 108/259 [00:00<00:00, 275.98it/s, now=None]
+global_step=10340, episodic_return=[0.]
+global_step=10392, episodic_return=[0.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-30.mp4.
+
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-30.mp4
+global_step=10716, episodic_return=[0.]
+SPS:  239
+SPS:  243
+global_step=11276, episodic_return=[0.]
+global_step=11364, episodic_return=[0.]
+global_step=11384, episodic_return=[-1.]
+global_step=11416, episodic_return=[0.]
+global_step=11740, episodic_return=[0.]
+SPS:  247
+SPS:  250
+global_step=12388, episodic_return=[0.]
+global_step=12408, episodic_return=[0.]
+global_step=12440, episodic_return=[0.]
+global_step=12764, episodic_return=[0.]
+SPS:  252
+SPS:  255
+global_step=13412, episodic_return=[0.]
+global_step=13432, episodic_return=[0.]
+global_step=13464, episodic_return=[0.]
+global_step=13788, episodic_return=[0.]
+global_step=13820, episodic_return=[-1.]
+SPS:  257
+SPS:  259
+global_step=14456, episodic_return=[0.]
+global_step=14488, episodic_return=[0.]
+global_step=14812, episodic_return=[0.]
+global_step=14844, episodic_return=[0.]
+SPS:  259
+SPS:  259
+global_step=15480, episodic_return=[0.]
+global_step=15512, episodic_return=[0.]
+global_step=15836, episodic_return=[0.]
+global_step=15868, episodic_return=[0.]
+SPS:  260
+global_step=16116, episodic_return=[-1.]
+global_step=16352, episodic_return=[-1.]
+SPS:  262
+global_step=16536, episodic_return=[0.]
+global_step=16860, episodic_return=[0.]
+SPS:  263
+global_step=17096, episodic_return=[-1.]
+global_step=17140, episodic_return=[0.]
+global_step=17376, episodic_return=[0.]
+SPS:  265
+global_step=17560, episodic_return=[0.]
+global_step=17868, episodic_return=[-1.]
+SPS:  267
+global_step=18120, episodic_return=[0.]
+global_step=18164, episodic_return=[0.]
+global_step=18192, episodic_return=[-1.]
+SPS:  268
+global_step=18584, episodic_return=[0.]
+global_step=18892, episodic_return=[0.]
+SPS:  270
+global_step=19188, episodic_return=[0.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-40.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-40.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-40.mp4
+global_step=19216, episodic_return=[0.]
+SPS:  268
+global_step=19608, episodic_return=[0.]
+global_step=19868, episodic_return=[-1.]
+global_step=19876, episodic_return=[-1.]
+global_step=19916, episodic_return=[0.]
+SPS:  269
+global_step=20240, episodic_return=[0.]
+SPS:  271
+global_step=20892, episodic_return=[0.]
+global_step=20900, episodic_return=[0.]
+global_step=20940, episodic_return=[0.]
+SPS:  274
+global_step=21264, episodic_return=[0.]
+SPS:  275
+global_step=21916, episodic_return=[0.]
+global_step=21924, episodic_return=[0.]
+global_step=21964, episodic_return=[0.]
+SPS:  277
+global_step=22288, episodic_return=[0.]
+SPS:  279
+global_step=22940, episodic_return=[0.]
+global_step=22948, episodic_return=[0.]
+global_step=22988, episodic_return=[0.]
+SPS:  280
+global_step=23312, episodic_return=[0.]
+SPS:  282
+global_step=23964, episodic_return=[0.]
+global_step=23972, episodic_return=[0.]
+global_step=24012, episodic_return=[0.]
+SPS:  284
+global_step=24336, episodic_return=[0.]
+SPS:  286
+global_step=24988, episodic_return=[0.]
+global_step=24996, episodic_return=[0.]
+global_step=25036, episodic_return=[0.]
+SPS:  288
+global_step=25360, episodic_return=[0.]
+SPS:  289
+global_step=25964, episodic_return=[-1.]
+global_step=26012, episodic_return=[0.]
+global_step=26060, episodic_return=[0.]
+SPS:  289
+global_step=26152, episodic_return=[-1.]
+global_step=26384, episodic_return=[0.]
+SPS:  289
+global_step=27036, episodic_return=[0.]
+global_step=27084, episodic_return=[0.]
+SPS:  290
+global_step=27176, episodic_return=[0.]
+global_step=27408, episodic_return=[0.]
+SPS:  292
+global_step=28060, episodic_return=[0.]
+global_step=28096, episodic_return=[-1.]
+global_step=28108, episodic_return=[0.]
+SPS:  293
+global_step=28200, episodic_return=[0.]
+global_step=28432, episodic_return=[0.]
+SPS:  294
+t:   0%|                                                                                                       | 0/259 [00:00<?, ?it/s, now=None]
+global_step=29120, episodic_return=[0.]
+global_step=29132, episodic_return=[0.]
+SPS:  295
+global_step=29224, episodic_return=[0.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-50.mp4.
+
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-50.mp4
+global_step=29456, episodic_return=[0.]
+SPS:  293
+global_step=30144, episodic_return=[0.]
+global_step=30148, episodic_return=[-1.]
+global_step=30156, episodic_return=[0.]
+SPS:  295
+global_step=30248, episodic_return=[0.]
+global_step=30480, episodic_return=[0.]
+SPS:  296
+global_step=31172, episodic_return=[0.]
+global_step=31180, episodic_return=[0.]
+SPS:  296
+global_step=31272, episodic_return=[0.]
+global_step=31504, episodic_return=[0.]
+SPS:  297
+global_step=32196, episodic_return=[0.]
+global_step=32204, episodic_return=[0.]
+SPS:  298
+global_step=32296, episodic_return=[0.]
+global_step=32528, episodic_return=[0.]
+SPS:  298
+global_step=33220, episodic_return=[0.]
+global_step=33228, episodic_return=[0.]
+SPS:  297
+global_step=33320, episodic_return=[0.]
+global_step=33416, episodic_return=[-1.]
+global_step=33552, episodic_return=[0.]
+SPS:  297
+global_step=34244, episodic_return=[0.]
+global_step=34252, episodic_return=[0.]
+SPS:  298
+global_step=34440, episodic_return=[0.]
+global_step=34524, episodic_return=[-1.]
+global_step=34576, episodic_return=[0.]
+SPS:  299
+global_step=35268, episodic_return=[0.]
+global_step=35276, episodic_return=[0.]
+SPS:  300
+global_step=35548, episodic_return=[0.]
+global_step=35596, episodic_return=[-1.]
+global_step=35600, episodic_return=[0.]
+SPS:  301
+global_step=36292, episodic_return=[0.]
+SPS:  302
+global_step=36572, episodic_return=[0.]
+global_step=36620, episodic_return=[0.]
+global_step=36624, episodic_return=[0.]
+SPS:  303
+global_step=37316, episodic_return=[0.]
+SPS:  304
+global_step=37596, episodic_return=[0.]
+global_step=37644, episodic_return=[0.]
+global_step=37648, episodic_return=[0.]
+SPS:  306
+global_step=38284, episodic_return=[-1.]
+global_step=38340, episodic_return=[0.]
+SPS:  307
+global_step=38620, episodic_return=[0.]
+global_step=38672, episodic_return=[0.]
+SPS:  308
+global_step=39308, episodic_return=[0.]
+global_step=39364, episodic_return=[0.]
+SPS:  308
+global_step=39644, episodic_return=[0.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-60.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-60.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-60.mp4
+global_step=39696, episodic_return=[0.]
+SPS:  308
+global_step=40160, episodic_return=[-1.]
+global_step=40332, episodic_return=[0.]
+global_step=40388, episodic_return=[0.]
+SPS:  308
+global_step=40528, episodic_return=[-1.]
+global_step=40720, episodic_return=[0.]
+SPS:  310
+global_step=41028, episodic_return=[-1.]
+global_step=41356, episodic_return=[0.]
+global_step=41396, episodic_return=[-1.]
+global_step=41412, episodic_return=[0.]
+SPS:  311
+global_step=41744, episodic_return=[0.]
+SPS:  312
+global_step=42380, episodic_return=[0.]
+global_step=42420, episodic_return=[0.]
+global_step=42436, episodic_return=[0.]
+SPS:  313
+global_step=42768, episodic_return=[0.]
+SPS:  314
+global_step=43404, episodic_return=[0.]
+global_step=43444, episodic_return=[0.]
+global_step=43460, episodic_return=[0.]
+SPS:  307
+global_step=43792, episodic_return=[0.]
+SPS:  308
+global_step=44428, episodic_return=[0.]
+global_step=44468, episodic_return=[0.]
+global_step=44484, episodic_return=[0.]
+SPS:  309
+global_step=44816, episodic_return=[0.]
+SPS:  310
+global_step=45452, episodic_return=[0.]
+global_step=45492, episodic_return=[0.]
+global_step=45508, episodic_return=[0.]
+SPS:  311
+global_step=45840, episodic_return=[0.]
+global_step=45924, episodic_return=[-1.]
+global_step=45956, episodic_return=[-1.]
+global_step=46048, episodic_return=[-1.]
+SPS:  311
+global_step=46476, episodic_return=[0.]
+global_step=46516, episodic_return=[0.]
+SPS:  312
+global_step=46948, episodic_return=[0.]
+global_step=47072, episodic_return=[0.]
+SPS:  313
+global_step=47500, episodic_return=[0.]
+global_step=47540, episodic_return=[0.]
+global_step=47584, episodic_return=[-1.]
+SPS:  314
+global_step=47676, episodic_return=[-1.]
+global_step=47972, episodic_return=[0.]
+global_step=48052, episodic_return=[-1.]
+SPS:  315
+global_step=48608, episodic_return=[0.]
+Traceback (most recent call last):
+  File "D:\Masters\Projects\thesis\cognitive-PPO\playground.py", line 287, in <module>
+    action, logprob, _, value = agent.get_action_and_value(next_obs)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Masters\Projects\thesis\cognitive-PPO\playground.py", line 71, in get_action_and_value
+    x = self.conv(x.permute(0, 3, 1, 2))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\torch\nn\modules\module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\torch\nn\modules\container.py", line 217, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\torch\nn\modules\module.py", line 1495, in _call_impl
+    forward_call = (self._slow_forward if torch._C._get_tracing_state() else self.forward)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+SPS:  315
+global_step=48700, episodic_return=[0.]
+global_step=48804, episodic_return=[-1.]
+Moviepy - Building video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-70.mp4.
+Moviepy - Writing video D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-70.mp4
+Moviepy - Done !
+Moviepy - video ready D:\Masters\Projects\thesis\cognitive-PPO\videos\MiniGrid-Dynamic-Obstacles-8x8-v0__playground__1__1682948639\rl-video-episode-70.mp4
+global_step=48996, episodic_return=[0.]
+global_step=49076, episodic_return=[0.]

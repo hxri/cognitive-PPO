@@ -1,0 +1,6 @@
+gymnasium>=0.26
+numpy>=1.18.0
+matplotlib>=3.0
+
+[testing]
+pytest==7.0.1

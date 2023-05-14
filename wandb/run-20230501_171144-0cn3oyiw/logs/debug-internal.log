@@ -1,0 +1,268 @@
+2023-05-01 17:11:44,788 INFO    StreamThr :4008 [internal.py:wandb_internal():86] W&B internal server running at pid: 4008, started at: 2023-05-01 17:11:44.787641
+2023-05-01 17:11:44,790 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: status
+2023-05-01 17:11:44,793 INFO    WriterThread:4008 [datastore.py:open_for_write():85] open: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\run-0cn3oyiw.wandb
+2023-05-01 17:11:44,796 DEBUG   SenderThread:4008 [sender.py:send():375] send: header
+2023-05-01 17:11:44,843 DEBUG   SenderThread:4008 [sender.py:send():375] send: run
+2023-05-01 17:11:45,687 INFO    SenderThread:4008 [dir_watcher.py:__init__():219] watching files in: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files
+2023-05-01 17:11:45,688 INFO    SenderThread:4008 [sender.py:_start_run_threads():1124] run started: 0cn3oyiw with start time 1682941304.783644
+2023-05-01 17:11:45,689 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: summary_record
+2023-05-01 17:11:45,690 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: check_version
+2023-05-01 17:11:45,692 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-01 17:11:45,693 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: check_version
+2023-05-01 17:11:45,927 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: run_start
+2023-05-01 17:11:45,946 DEBUG   HandlerThread:4008 [system_info.py:__init__():31] System info init
+2023-05-01 17:11:45,946 DEBUG   HandlerThread:4008 [system_info.py:__init__():46] System info init done
+2023-05-01 17:11:45,946 INFO    HandlerThread:4008 [system_monitor.py:start():181] Starting system monitor
+2023-05-01 17:11:45,947 INFO    SystemMonitor:4008 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2023-05-01 17:11:45,947 INFO    HandlerThread:4008 [system_monitor.py:probe():201] Collecting system info
+2023-05-01 17:11:45,950 INFO    SystemMonitor:4008 [interfaces.py:start():190] Started cpu monitoring
+2023-05-01 17:11:45,950 DEBUG   HandlerThread:4008 [system_info.py:probe():195] Probing system
+2023-05-01 17:11:45,951 INFO    SystemMonitor:4008 [interfaces.py:start():190] Started disk monitoring
+2023-05-01 17:11:45,952 INFO    SystemMonitor:4008 [interfaces.py:start():190] Started memory monitoring
+2023-05-01 17:11:45,968 INFO    SystemMonitor:4008 [interfaces.py:start():190] Started network monitoring
+2023-05-01 17:11:45,969 DEBUG   HandlerThread:4008 [system_info.py:_probe_git():180] Probing git
+2023-05-01 17:11:46,055 DEBUG   HandlerThread:4008 [system_info.py:_probe_git():188] Probing git done
+2023-05-01 17:11:46,055 DEBUG   HandlerThread:4008 [system_info.py:probe():240] Probing system done
+2023-05-01 17:11:46,055 DEBUG   HandlerThread:4008 [system_monitor.py:probe():210] {'os': 'Windows-10-10.0.19044-SP0', 'python': '3.11.3', 'heartbeatAt': '2023-05-01T11:41:45.951692', 'startedAt': '2023-05-01T11:41:44.756619', 'docker': None, 'cuda': None, 'args': ('--track',), 'state': 'running', 'program': 'D:\\Masters\\Projects\\thesis\\cognitive-PPO\\playground.py', 'codePath': 'playground.py', 'git': {'remote': 'https://github.com/hxri/cognitive-PPO.git', 'commit': '48a4b8d2116569558768003e21eee28c20a504cf'}, 'email': 'h4ri.prasad@gmail.com', 'root': 'D:/Masters/Projects/thesis/cognitive-PPO', 'host': 'DESKTOP-DD9PFKK', 'username': 'hxri', 'executable': 'C:\\Users\\hxri\\miniconda3\\envs\\cogppo\\python.exe', 'cpu_count': 2, 'cpu_count_logical': 4, 'cpu_freq': {'current': 2201.0, 'min': 0.0, 'max': 2201.0}, 'cpu_freq_per_core': [{'current': 2201.0, 'min': 0.0, 'max': 2201.0}], 'disk': {'total': 23.569332122802734, 'used': 16.006656646728516}, 'memory': {'total': 7.9164581298828125}}
+2023-05-01 17:11:46,055 INFO    HandlerThread:4008 [system_monitor.py:probe():211] Finished collecting system info
+2023-05-01 17:11:46,055 INFO    HandlerThread:4008 [system_monitor.py:probe():214] Publishing system info
+2023-05-01 17:11:46,055 DEBUG   HandlerThread:4008 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-05-01 17:11:46,056 DEBUG   HandlerThread:4008 [system_info.py:_save_pip():67] Saving pip packages done
+2023-05-01 17:11:46,056 DEBUG   HandlerThread:4008 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-05-01 17:11:46,058 ERROR   HandlerThread:4008 [system_info.py:_save_conda():85] Error saving conda packages: [WinError 2] The system cannot find the file specified
+Traceback (most recent call last):
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\site-packages\wandb\sdk\internal\system\system_info.py", line 81, in _save_conda
+    subprocess.call(
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\subprocess.py", line 389, in call
+    with Popen(*popenargs, **kwargs) as p:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\subprocess.py", line 1024, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Users\hxri\miniconda3\envs\cogppo\Lib\subprocess.py", line 1509, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+2023-05-01 17:11:46,060 DEBUG   HandlerThread:4008 [system_info.py:_save_conda():86] Saving conda packages done
+2023-05-01 17:11:46,060 DEBUG   HandlerThread:4008 [system_info.py:_save_code():89] Saving code
+2023-05-01 17:11:46,101 DEBUG   HandlerThread:4008 [system_info.py:_save_code():110] Saving code done
+2023-05-01 17:11:46,101 DEBUG   HandlerThread:4008 [system_info.py:_save_patches():127] Saving git patches
+2023-05-01 17:11:46,429 DEBUG   HandlerThread:4008 [system_info.py:_save_patches():169] Saving git patches done
+2023-05-01 17:11:46,451 INFO    HandlerThread:4008 [system_monitor.py:probe():216] Finished publishing system info
+2023-05-01 17:11:46,470 DEBUG   SenderThread:4008 [sender.py:send():375] send: files
+2023-05-01 17:11:46,470 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-05-01 17:11:46,471 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file code\playground.py with policy now
+2023-05-01 17:11:46,471 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file diff.patch with policy now
+2023-05-01 17:11:46,705 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\wandb-summary.json
+2023-05-01 17:11:46,706 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\requirements.txt
+2023-05-01 17:11:46,707 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\conda-environment.yaml
+2023-05-01 17:11:46,708 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\wandb-metadata.json
+2023-05-01 17:11:46,709 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\code\playground.py
+2023-05-01 17:11:46,709 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\diff.patch
+2023-05-01 17:11:46,710 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\code
+2023-05-01 17:11:46,851 INFO    wandb-upload_1:4008 [upload_job.py:push():117] Skipped uploading C:\Users\hxri\AppData\Local\Temp\tmpx6wynyuvwandb\pfqeq1fz-code/playground.py
+2023-05-01 17:11:47,007 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: log_artifact
+2023-05-01 17:11:47,007 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: log_artifact
+2023-05-01 17:11:47,114 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: stop_status
+2023-05-01 17:11:47,115 INFO    HandlerThread:4008 [handler.py:handle_tbrecord():750] handling tbrecord: tbrecord {
+  log_dir: "runs/MiniGrid-Dynamic-Obstacles-16x16-v0__playground__1__1682941300"
+  save: true
+}
+control {
+  relay_id: "d03e86af81f94fe0a69a5e7177ab51ef"
+}
+_info {
+  stream_id: "0cn3oyiw"
+}
+
+2023-05-01 17:11:47,117 DEBUG   HandlerThread:4008 [config_util.py:dict_from_config_file():104] no default config file found in config-defaults.yaml
+2023-05-01 17:11:47,483 INFO    wandb-upload_0:4008 [upload_job.py:push():137] Uploaded file C:\Users\hxri\AppData\Local\Temp\tmpx6wynyuvwandb\yxfhj2hf-wandb-metadata.json
+2023-05-01 17:11:47,732 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\events.out.tfevents.1682941307.DESKTOP-DD9PFKK.3052.0
+2023-05-01 17:11:48,057 INFO    wandb-upload_2:4008 [upload_job.py:push():137] Uploaded file C:\Users\hxri\AppData\Local\Temp\tmpx6wynyuvwandb\3r5khbvw-diff.patch
+2023-05-01 17:11:48,223 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: poll_exit
+2023-05-01 17:11:48,740 INFO    wandb-upload_1:4008 [upload_job.py:push():137] Uploaded file C:\Users\hxri\AppData\Local\Temp\tmpx6wynyuvwandb\v3n7cm81-events.out.tfevents.1682941307.DESKTOP-DD9PFKK.3052.0
+2023-05-01 17:11:49,086 INFO    wandb-upload_0:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpkuw8wf4y
+2023-05-01 17:11:49,086 INFO    wandb-upload_2:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpt8rnp9vx
+2023-05-01 17:11:49,086 INFO    wandb-upload_3:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpzd581s80
+2023-05-01 17:11:49,087 INFO    wandb-upload_4:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpkvxusijo
+2023-05-01 17:11:49,087 INFO    wandb-upload_5:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp0uwo8ml3
+2023-05-01 17:11:49,087 INFO    wandb-upload_6:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpdk1f_avq
+2023-05-01 17:11:49,087 INFO    wandb-upload_7:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpwi8tj6_e
+2023-05-01 17:11:49,087 INFO    wandb-upload_8:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpj_mk6wci
+2023-05-01 17:11:49,088 INFO    wandb-upload_9:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpxzqgl47d
+2023-05-01 17:11:49,088 INFO    wandb-upload_10:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpgxy72a41
+2023-05-01 17:11:49,088 INFO    wandb-upload_11:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpdbsqxmfr
+2023-05-01 17:11:49,089 INFO    wandb-upload_17:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmprh4930a9
+2023-05-01 17:11:49,089 INFO    wandb-upload_18:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpuctjci3i
+2023-05-01 17:11:49,089 INFO    wandb-upload_12:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpy4123m6u
+2023-05-01 17:11:49,089 INFO    wandb-upload_13:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpgtlqi9rl
+2023-05-01 17:11:49,089 INFO    wandb-upload_14:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp95wtwwo0
+2023-05-01 17:11:49,089 INFO    wandb-upload_15:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmps540kkvp
+2023-05-01 17:11:49,089 INFO    wandb-upload_16:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp4yt7ge7x
+2023-05-01 17:11:49,566 INFO    wandb-upload_19:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpm3agn17m
+2023-05-01 17:11:49,566 INFO    wandb-upload_20:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp4qxglbjd
+2023-05-01 17:11:49,566 INFO    wandb-upload_21:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpg05wqpz0
+2023-05-01 17:11:49,566 INFO    wandb-upload_22:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpllm0yy56
+2023-05-01 17:11:49,566 INFO    wandb-upload_23:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp45wbeb4a
+2023-05-01 17:11:49,566 INFO    wandb-upload_24:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmptg9r8c7r
+2023-05-01 17:11:49,567 INFO    wandb-upload_25:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpyjibv_x4
+2023-05-01 17:11:49,567 INFO    wandb-upload_26:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpag5g1iro
+2023-05-01 17:11:49,567 INFO    wandb-upload_27:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpd27yejs7
+2023-05-01 17:11:49,567 INFO    wandb-upload_28:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp9mav65s_
+2023-05-01 17:11:49,567 INFO    wandb-upload_29:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp9u8sfln3
+2023-05-01 17:11:49,567 INFO    wandb-upload_30:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpjfyon89a
+2023-05-01 17:11:49,567 INFO    wandb-upload_31:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpk8i_7jns
+2023-05-01 17:11:49,567 INFO    wandb-upload_33:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp_u4n4gn2
+2023-05-01 17:11:49,567 INFO    wandb-upload_34:4008 [upload_job.py:push():92] Skipped uploading C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp0falr_u9
+2023-05-01 17:11:50,181 INFO    wandb-upload_32:4008 [upload_job.py:push():95] Uploaded file C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpqmdw5gy0
+2023-05-01 17:11:51,688 INFO    SenderThread:4008 [sender.py:send_request_log_artifact():1438] logged artifact source-cleanRL-playground.py - {'id': 'QXJ0aWZhY3Q6NDM4NTQyNDcy', 'digest': 'ef6833827e03dec62e905b7751f77a5a', 'state': 'PENDING', 'aliases': [], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjYyNjExMzc1', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6NDM4NDg2Nzc2', 'versionIndex': 9}}, 'version': 'latest'}
+2023-05-01 17:11:51,689 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: stop_status
+2023-05-01 17:11:51,689 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: status_report
+2023-05-01 17:11:51,993 DEBUG   SenderThread:4008 [sender.py:send():375] send: telemetry
+2023-05-01 17:11:51,995 DEBUG   SenderThread:4008 [sender.py:send():375] send: tbrecord
+2023-05-01 17:11:51,998 DEBUG   SenderThread:4008 [sender.py:send():375] send: exit
+2023-05-01 17:11:51,999 INFO    SenderThread:4008 [sender.py:send_exit():598] handling exit code: 1
+2023-05-01 17:11:51,999 INFO    SenderThread:4008 [sender.py:send_exit():600] handling runtime: 1
+2023-05-01 17:11:52,009 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-01 17:11:52,012 INFO    SenderThread:4008 [sender.py:send_exit():606] send defer
+2023-05-01 17:11:52,012 DEBUG   SenderThread:4008 [sender.py:send():375] send: files
+2023-05-01 17:11:52,013 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file events.out.tfevents.1682941307.DESKTOP-DD9PFKK.3052.0 with policy live
+2023-05-01 17:11:52,013 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:52,014 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 0
+2023-05-01 17:11:52,016 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: poll_exit
+2023-05-01 17:11:52,017 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:52,017 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 0
+2023-05-01 17:11:52,017 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 1
+2023-05-01 17:11:52,018 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:52,018 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 1
+2023-05-01 17:11:52,020 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:52,020 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 1
+2023-05-01 17:11:52,020 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 2
+2023-05-01 17:11:52,021 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:52,021 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 2
+2023-05-01 17:11:52,021 INFO    HandlerThread:4008 [system_monitor.py:finish():190] Stopping system monitor
+2023-05-01 17:11:52,023 DEBUG   SystemMonitor:4008 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2023-05-01 17:11:52,023 DEBUG   SystemMonitor:4008 [system_monitor.py:_start():166] Finished system metrics aggregation loop
+2023-05-01 17:11:52,023 DEBUG   SystemMonitor:4008 [system_monitor.py:_start():170] Publishing last batch of metrics
+2023-05-01 17:11:52,025 INFO    HandlerThread:4008 [interfaces.py:finish():202] Joined cpu monitor
+2023-05-01 17:11:52,025 INFO    HandlerThread:4008 [interfaces.py:finish():202] Joined disk monitor
+2023-05-01 17:11:52,026 INFO    HandlerThread:4008 [interfaces.py:finish():202] Joined memory monitor
+2023-05-01 17:11:52,027 INFO    HandlerThread:4008 [interfaces.py:finish():202] Joined network monitor
+2023-05-01 17:11:52,028 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:52,028 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 2
+2023-05-01 17:11:52,028 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 3
+2023-05-01 17:11:52,028 DEBUG   SenderThread:4008 [sender.py:send():375] send: stats
+2023-05-01 17:11:52,029 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:52,029 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 3
+2023-05-01 17:11:52,029 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:52,029 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 3
+2023-05-01 17:11:52,030 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 4
+2023-05-01 17:11:52,030 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:52,030 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 4
+2023-05-01 17:11:52,777 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\wandb-summary.json
+2023-05-01 17:11:52,778 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_created():278] file/dir created: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\output.log
+2023-05-01 17:11:54,793 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\output.log
+2023-05-01 17:11:58,129 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: keepalive
+2023-05-01 17:11:58,129 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: status_report
+2023-05-01 17:11:58,130 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:58,131 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 4
+2023-05-01 17:11:58,131 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 5
+2023-05-01 17:11:58,131 DEBUG   SenderThread:4008 [sender.py:send():375] send: history
+2023-05-01 17:11:58,131 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:58,131 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: summary_record
+2023-05-01 17:11:58,132 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 5
+2023-05-01 17:11:58,135 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-01 17:11:58,136 DEBUG   SenderThread:4008 [sender.py:send():375] send: summary
+2023-05-01 17:11:58,137 INFO    SenderThread:4008 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-01 17:11:58,137 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:58,137 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 5
+2023-05-01 17:11:58,138 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 6
+2023-05-01 17:11:58,138 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:58,138 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 6
+2023-05-01 17:11:58,138 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:58,138 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 6
+2023-05-01 17:11:58,142 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: status_report
+2023-05-01 17:11:58,288 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: keepalive
+2023-05-01 17:11:58,537 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 7
+2023-05-01 17:11:58,538 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:11:58,538 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 7
+2023-05-01 17:11:58,538 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:11:58,538 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 7
+2023-05-01 17:11:58,827 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\config.yaml
+2023-05-01 17:11:58,827 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\wandb-summary.json
+2023-05-01 17:12:00,023 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 8
+2023-05-01 17:12:00,025 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:12:00,025 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 8
+2023-05-01 17:12:00,026 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:12:00,027 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 8
+2023-05-01 17:12:00,051 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 9
+2023-05-01 17:12:00,052 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:12:00,052 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 9
+2023-05-01 17:12:00,053 DEBUG   SenderThread:4008 [sender.py:send():375] send: artifact
+2023-05-01 17:12:00,854 INFO    Thread-16 :4008 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\output.log
+2023-05-01 17:12:02,254 INFO    wandb-upload_0:4008 [upload_job.py:push():95] Uploaded file C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmp7rgnkma9
+2023-05-01 17:12:02,267 INFO    wandb-upload_2:4008 [upload_job.py:push():95] Uploaded file C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpripq72qd
+2023-05-01 17:12:02,962 INFO    wandb-upload_1:4008 [upload_job.py:push():95] Uploaded file C:\Users\hxri\AppData\Local\wandb\wandb\artifacts\staging\tmpbgucawbz
+2023-05-01 17:12:03,348 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: keepalive
+2023-05-01 17:12:04,981 INFO    SenderThread:4008 [sender.py:send_artifact():1474] sent artifact job-https___github.com_hxri_cognitive-PPO.git_playground.py - {'id': 'QXJ0aWZhY3Q6NDM4NTQyNjI1', 'digest': 'e72f8f655f6beccf9838601232068456', 'state': 'PENDING', 'aliases': [], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjY1NzQxOTUw', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6NDM4NDk0ODg3', 'versionIndex': 4}}, 'version': 'latest'}
+2023-05-01 17:12:04,982 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:12:04,982 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 9
+2023-05-01 17:12:04,982 INFO    SenderThread:4008 [dir_watcher.py:finish():365] shutting down directory watcher
+2023-05-01 17:12:04,983 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: status_report
+2023-05-01 17:12:05,936 INFO    SenderThread:4008 [dir_watcher.py:finish():395] scan: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files
+2023-05-01 17:12:05,937 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\conda-environment.yaml conda-environment.yaml
+2023-05-01 17:12:05,937 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\config.yaml config.yaml
+2023-05-01 17:12:05,938 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\diff.patch diff.patch
+2023-05-01 17:12:05,938 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\events.out.tfevents.1682941307.DESKTOP-DD9PFKK.3052.0 events.out.tfevents.1682941307.DESKTOP-DD9PFKK.3052.0
+2023-05-01 17:12:05,939 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\output.log output.log
+2023-05-01 17:12:05,944 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\requirements.txt requirements.txt
+2023-05-01 17:12:05,951 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\wandb-metadata.json wandb-metadata.json
+2023-05-01 17:12:05,951 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\wandb-summary.json wandb-summary.json
+2023-05-01 17:12:05,965 INFO    SenderThread:4008 [dir_watcher.py:finish():409] scan save: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\code\playground.py code\playground.py
+2023-05-01 17:12:05,966 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 10
+2023-05-01 17:12:05,967 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:12:05,967 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 10
+2023-05-01 17:12:05,968 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:12:05,968 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 10
+2023-05-01 17:12:05,968 INFO    SenderThread:4008 [file_pusher.py:finish():168] shutting down file pusher
+2023-05-01 17:12:06,773 INFO    wandb-upload_6:4008 [upload_job.py:push():137] Uploaded file D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\output.log
+2023-05-01 17:12:06,799 INFO    wandb-upload_4:4008 [upload_job.py:push():137] Uploaded file D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\config.yaml
+2023-05-01 17:12:07,029 INFO    wandb-upload_10:4008 [upload_job.py:push():137] Uploaded file D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\wandb-summary.json
+2023-05-01 17:12:07,041 INFO    wandb-upload_8:4008 [upload_job.py:push():137] Uploaded file D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\files\requirements.txt
+2023-05-01 17:12:07,244 INFO    Thread-15 (_thread_body):4008 [sender.py:transition_state():626] send defer: 11
+2023-05-01 17:12:07,246 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:12:07,247 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 11
+2023-05-01 17:12:07,248 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:12:07,248 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 11
+2023-05-01 17:12:07,249 INFO    SenderThread:4008 [file_pusher.py:join():173] waiting for file pusher
+2023-05-01 17:12:07,249 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 12
+2023-05-01 17:12:07,250 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:12:07,250 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 12
+2023-05-01 17:12:07,252 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:12:07,252 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 12
+2023-05-01 17:12:07,605 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 13
+2023-05-01 17:12:07,605 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:12:07,606 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 13
+2023-05-01 17:12:07,607 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:12:07,607 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 13
+2023-05-01 17:12:07,607 INFO    SenderThread:4008 [sender.py:transition_state():626] send defer: 14
+2023-05-01 17:12:07,608 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: defer
+2023-05-01 17:12:07,608 INFO    HandlerThread:4008 [handler.py:handle_request_defer():170] handle defer: 14
+2023-05-01 17:12:07,610 DEBUG   SenderThread:4008 [sender.py:send():375] send: final
+2023-05-01 17:12:07,610 DEBUG   SenderThread:4008 [sender.py:send():375] send: footer
+2023-05-01 17:12:07,610 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: defer
+2023-05-01 17:12:07,611 INFO    SenderThread:4008 [sender.py:send_request_defer():622] handle sender defer: 14
+2023-05-01 17:12:07,614 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: poll_exit
+2023-05-01 17:12:07,614 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: server_info
+2023-05-01 17:12:07,615 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: get_summary
+2023-05-01 17:12:07,615 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: sampled_history
+2023-05-01 17:12:07,618 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: poll_exit
+2023-05-01 17:12:07,619 DEBUG   SenderThread:4008 [sender.py:send_request():402] send_request: server_info
+2023-05-01 17:12:07,911 INFO    MainThread:4008 [wandb_run.py:_footer_history_summary_info():3476] rendering history
+2023-05-01 17:12:07,911 INFO    MainThread:4008 [wandb_run.py:_footer_history_summary_info():3508] rendering summary
+2023-05-01 17:12:07,912 INFO    MainThread:4008 [wandb_run.py:_footer_sync_info():3434] logging synced files
+2023-05-01 17:12:07,915 DEBUG   HandlerThread:4008 [handler.py:handle_request():144] handle_request: shutdown
+2023-05-01 17:12:07,916 INFO    HandlerThread:4008 [handler.py:finish():845] shutting down handler
+2023-05-01 17:12:08,628 INFO    WriterThread:4008 [datastore.py:close():298] close: D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171144-0cn3oyiw\run-0cn3oyiw.wandb
+2023-05-01 17:12:08,922 INFO    SenderThread:4008 [sender.py:finish():1550] shutting down sender
+2023-05-01 17:12:08,922 INFO    SenderThread:4008 [file_pusher.py:finish():168] shutting down file pusher
+2023-05-01 17:12:08,923 INFO    SenderThread:4008 [file_pusher.py:join():173] waiting for file pusher

@@ -1,0 +1,28 @@
+2023-05-01 17:12:22,463 INFO    MainThread:5676 [wandb_setup.py:_flush():76] Configure stats pid to 5676
+2023-05-01 17:12:22,464 INFO    MainThread:5676 [wandb_setup.py:_flush():76] Loading settings from C:\Users\hxri\.config\wandb\settings
+2023-05-01 17:12:22,464 INFO    MainThread:5676 [wandb_setup.py:_flush():76] Loading settings from D:\Masters\Projects\thesis\cognitive-PPO\wandb\settings
+2023-05-01 17:12:22,465 INFO    MainThread:5676 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-05-01 17:12:22,465 INFO    MainThread:5676 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-05-01 17:12:22,465 INFO    MainThread:5676 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'playground.py', 'program': 'D:\\Masters\\Projects\\thesis\\cognitive-PPO\\playground.py'}
+2023-05-01 17:12:22,467 INFO    MainThread:5676 [wandb_init.py:_log_setup():507] Logging user logs to D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171222-h23slf9x\logs\debug.log
+2023-05-01 17:12:22,468 INFO    MainThread:5676 [wandb_init.py:_log_setup():508] Logging internal logs to D:\Masters\Projects\thesis\cognitive-PPO\wandb\run-20230501_171222-h23slf9x\logs\debug-internal.log
+2023-05-01 17:12:22,468 INFO    MainThread:5676 [wandb_init.py:init():547] calling init triggers
+2023-05-01 17:12:22,469 INFO    MainThread:5676 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {'exp_name': 'playground', 'gym_id': 'MiniGrid-Dynamic-Obstacles-16x16-v0', 'learning_rate': 0.00025, 'seed': 1, 'total_timesteps': 500000, 'torch_det': True, 'cuda': True, 'track': True, 'wandb_project_name': 'cleanRL', 'wandb_entity': None, 'capture_video': False, 'num_envs': 4, 'num_steps': 128, 'anneal_lr': True, 'gae': True, 'gamma': 0.99, 'gae_lambda': 0.95, 'num_minibatches': 16, 'update_epochs': 4, 'norm_adv': True, 'clip_coef': 0.2, 'clip_vloss': True, 'ent_coef': 0.1, 'vf_coef': 0.5, 'max_grad_norm': 0.5, 'target_kl': None, 'batch_size': 512, 'minibatch_size': 32}
+2023-05-01 17:12:22,469 INFO    MainThread:5676 [wandb_init.py:init():595] starting backend
+2023-05-01 17:12:22,469 INFO    MainThread:5676 [wandb_init.py:init():599] setting up manager
+2023-05-01 17:12:22,495 INFO    MainThread:5676 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn, using: spawn
+2023-05-01 17:12:22,500 INFO    MainThread:5676 [wandb_init.py:init():605] backend started and connected
+2023-05-01 17:12:22,506 INFO    MainThread:5676 [wandb_init.py:init():695] updated telemetry
+2023-05-01 17:12:22,556 INFO    MainThread:5676 [wandb_init.py:init():732] communicating run to backend with 60.0 second timeout
+2023-05-01 17:12:23,395 INFO    MainThread:5676 [wandb_run.py:_on_init():2176] communicating current version
+2023-05-01 17:12:23,641 INFO    MainThread:5676 [wandb_run.py:_on_init():2185] got version response upgrade_message: "wandb version 0.15.0 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-05-01 17:12:23,641 INFO    MainThread:5676 [wandb_init.py:init():782] starting run threads in backend
+2023-05-01 17:12:24,695 INFO    MainThread:5676 [wandb_run.py:_console_start():2157] atexit reg
+2023-05-01 17:12:24,695 INFO    MainThread:5676 [wandb_run.py:_redirect():2012] redirect: 3
+2023-05-01 17:12:24,696 INFO    MainThread:5676 [wandb_run.py:_redirect():2077] Wrapping output streams.
+2023-05-01 17:12:24,696 INFO    MainThread:5676 [wandb_run.py:_redirect():2102] Redirects installed.
+2023-05-01 17:12:24,698 INFO    MainThread:5676 [wandb_init.py:init():824] run started, returning control to user process
+2023-05-01 17:12:24,698 INFO    MainThread:5676 [wandb_run.py:_tensorboard_callback():1432] tensorboard callback: runs/MiniGrid-Dynamic-Obstacles-16x16-v0__playground__1__1682941338, True
+2023-05-01 17:12:53,459 WARNING MsgRouterThr:5676 [router.py:message_loop():77] message_loop has been closed

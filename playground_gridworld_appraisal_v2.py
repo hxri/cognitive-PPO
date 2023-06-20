@@ -16,9 +16,9 @@ from appraisal import motivational_relevance, novelty, certainity, coping_potent
 
 # Environment parameters
 agent_view_size = 7
-max_steps = 10000
+max_steps = 100
 n_obstacles = 2
-size = 11
+size = 10
 agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
@@ -32,7 +32,7 @@ def make_env(gym_id, seed, idx, capture_video, run_name):
                        n_obstacles=n_obstacles,
                        size=size,
                        agent_start_pos=agent_start_pos,
-                       dynamic_wall=True,
+                       dynamic_wall=False,
                        dynamic_goal=True,
                        dynamic_obstacles=True,
                        moving_goal=False)
@@ -40,7 +40,7 @@ def make_env(gym_id, seed, idx, capture_video, run_name):
         if capture_video:
             if idx == 0:
                 print("\n")
-                env = gym.wrappers.RecordVideo(env, f'videos/{run_name}', episode_trigger = lambda x: x % 100 == 0)
+                env = gym.wrappers.RecordVideo(env, f'videos/{run_name}', episode_trigger = lambda x: x % 10 == 0)
         env.reset(seed=seed)
         env.action_space.seed(seed)
         env.observation_space.seed(seed)
@@ -107,14 +107,15 @@ class Agent(nn.Module):
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            Attention(64),
+            # Attention(64),
+            nn.ReLU(),
             nn.Flatten()
         )
 
         input_shape = (agent_view_size + 3, agent_view_size + 3)
         self.critic = nn.Sequential(
-            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
-            nn.Linear(64*input_shape[0]*input_shape[1], 256),
+            nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
+            # nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
@@ -122,8 +123,8 @@ class Agent(nn.Module):
         )
 
         self.actor = nn.Sequential(
-            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
-            nn.Linear(64*input_shape[0]*input_shape[1], 256),
+            nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
+            # nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
@@ -137,16 +138,15 @@ class Agent(nn.Module):
         return app
 
     def get_value(self, x, appraisal):
-        xe = self.conv(x.permute(0, 3, 1, 2))
-        # xe = torch.cat([x1, appraisal], dim=-1)
+        x1 = self.conv(x.permute(0, 3, 1, 2))
+        xe = torch.cat([x1, appraisal], dim=-1)
         cr = self.critic(xe)
         napp = appraisal_calc(x[:][..., 0], cr)
         return self.critic(xe), napp
             
     def get_action_and_value(self, x, appraisal, action=None):
-        xe = self.conv(x.permute(0, 3, 1, 2))
-        # print(appraisal.shape, x.shape)
-        # xe = torch.cat([x1, appraisal], dim=-1)
+        x1 = self.conv(x.permute(0, 3, 1, 2))
+        xe = torch.cat([x1, appraisal], dim=-1)
         logits = self.actor(xe)
         napp = appraisal_calc(x[:][..., 0], logits)
         probs = Categorical(logits=logits)
@@ -358,6 +358,7 @@ if __name__ == "__main__":
     next_done = torch.zeros(args.num_envs).to(device)
     num_updates = args.total_timesteps // args.batch_size
     next_appraisal = torch.tensor(agent.get_appraisal(next_obs))
+    next_appraisal = torch.cat((next_appraisal, torch.tensor([[0], [0], [0], [0]]), torch.tensor([[0], [0], [0], [0]]), torch.tensor([[0], [0], [0], [0]])), dim=1)
 
     for update in range(1, num_updates + 1):
         # Early stop
@@ -397,15 +398,15 @@ if __name__ == "__main__":
             #     rewards[step] = torch.tensor(reward).to(device).view(-1)
             # else:
             #     rewards[step] = reward_with_app(base_rw, mot_rel)
-            # rewards[step] = torch.tensor(reward).to(device).view(-1)
+            rewards[step] = torch.tensor(reward).to(device).view(-1)
 
             anti[step] = (((rewards[step] * args.gamma -  values[step]) + 2) / 4)
 
             app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
             appraisals[step] = app
-            # print(app)
+            # print(appraisals[step])
 
-            rewards[step] = torch.tensor(reward_with_app(base_rw, appraisals[step])).to(device).view(-1)
+            # rewards[step] = torch.tensor(reward_with_app(base_rw, appraisals[step])).to(device).view(-1)
             next_obs, next_done = torch.Tensor(next_obs['image']).to(device), torch.Tensor(terminated).to(device)
             # print(info)
             if('final_info' in info):
@@ -415,7 +416,7 @@ if __name__ == "__main__":
                         # print(item)
                         if 'episode' in item.keys():
                             return_arr = item['episode']['r'].item()
-                            # print(f"global_step={global_step}, episodic_return={item['episode']['r']}")
+                            print(f"global_step={global_step}, episodic_return={item['episode']['r']}")
                             # if(len(return_arr > 3)):
                             #     print(f"global_step={global_step}, episodic_return={np.average(return_arr)}")
                             # else:
@@ -428,7 +429,7 @@ if __name__ == "__main__":
         # bootstrap reward if not done with GAE
         with torch.no_grad():
             # print(next_obs)
-            next_value, napp = agent.get_value(next_obs, next_appraisal)
+            next_value, napp = agent.get_value(next_obs, appraisals[step])
             # mot_rel = torch.stack([item[0] for item in napp])
             next_value = next_value.reshape(1, -1)
             if args.gae:
@@ -448,7 +449,7 @@ if __name__ == "__main__":
                     # print(advantages[t].shape)
                     # print(napp.shape)
                     # t1_prime = advantages[t].unsqueeze(1).expand_as(napp)
-                    # result =t1_prime * napp
+                    # result = t1_prime * napp
                     # advantages[t] = result.sum(dim=1)
                 returns = advantages + values
             else:
@@ -478,7 +479,6 @@ if __name__ == "__main__":
         b_gc = gc.reshape(-1)
         b_cp = cp.reshape(-1)
         b_anti = anti.reshape(-1)
-
 
 
         # Optimizing the policy and value network
@@ -537,7 +537,6 @@ if __name__ == "__main__":
                 # appraisal_loss = F.kl_div(torch.mean(newapp, 0), appraisal_targets, reduction='batchmean').mean(-1, keepdim=True)
 
                 loss = pg_loss - args.ent_coef * entropy_loss + args.vf_coef * v_loss + 0.01 * appraisal_loss
-
                 optimizer.zero_grad()
                 loss.backward()
                 nn.utils.clip_grad_norm_(agent.parameters(), args.max_grad_norm)
@@ -551,17 +550,17 @@ if __name__ == "__main__":
         var_y = np.var(y_true)
         explained_var = np.nan if var_y == 0 else 1 - np.var(y_true - y_pred) / var_y
 
-        print("GS {} | R {:.3f} | lr {:.3e} | vL {:.3f} | pL {:.3f} | E {:.3f} | KL {:.3f} | cF {:.3f} | eVar {:.3f} | aL {:.3f} | SPS {}" .format(global_step,
-                                                                                                                                                   return_arr, 
-                                                                                                                                                    optimizer.param_groups[0]['lr'],
-                                                                                                                                                    v_loss.item(),
-                                                                                                                                                    pg_loss.item(),
-                                                                                                                                                    entropy_loss.item(),
-                                                                                                                                                    approx_kl.item(),
-                                                                                                                                                    np.mean(clipfracs),
-                                                                                                                                                    explained_var,
-                                                                                                                                                    appraisal_loss.item(),
-                                                                                                                                                    int(global_step / (time.time() - start_time)),))
+        # print("\nGS {} | R {:.3f} | lr {:.3e} | vL {:.3f} | pL {:.3f} | E {:.3f} | KL {:.3f} | cF {:.3f} | eVar {:.3f} | aL {:.3f} | SPS {}\n" .format(global_step,
+        #                                                                                                                                            return_arr, 
+        #                                                                                                                                             optimizer.param_groups[0]['lr'],
+        #                                                                                                                                             v_loss.item(),
+        #                                                                                                                                             pg_loss.item(),
+        #                                                                                                                                             entropy_loss.item(),
+        #                                                                                                                                             approx_kl.item(),
+        #                                                                                                                                             np.mean(clipfracs),
+        #                                                                                                                                             explained_var,
+        #                                                                                                                                             appraisal_loss.item(),
+        #                                                                                                                                             int(global_step / (time.time() - start_time)),))
         # Try not to modify: record rewards for plotting
         writer.add_scalar("charts/learning_rate", optimizer.param_groups[0]['lr'], global_step)
         writer.add_scalar("charts/value_loss", v_loss.item(), global_step)

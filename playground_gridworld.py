@@ -16,9 +16,9 @@ from torch.autograd import Variable
 
 # Environment parameters
 agent_view_size = 7
-max_steps = 10000
+max_steps = 100
 n_obstacles = 2
-size = 11
+size = 10
 agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
@@ -86,7 +86,7 @@ class Agent(nn.Module):
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            Attention(64),
+            # Attention(64),
             nn.Flatten()
         )
 
@@ -355,19 +355,20 @@ if __name__ == "__main__":
             rewards[step] = torch.tensor(reward).to(device).view(-1)
             next_obs, next_done = torch.Tensor(next_obs['image']).to(device), torch.Tensor(terminated).to(device)
             # print(info)
-            if(len(info)!=0):
+            if('final_info' in info):
+                # print(info)
                 for item in info['final_info']:
                     if(item):
                         # print(item)
                         if 'episode' in item.keys():
-                            return_arr.append(item['episode']['r'])
+                            return_arr = item['episode']['r'].item()
                             print(f"global_step={global_step}, episodic_return={item['episode']['r']}")
                             # if(len(return_arr > 3)):
                             #     print(f"global_step={global_step}, episodic_return={np.average(return_arr)}")
                             # else:
                             #     print(f"global_step={global_step}, episodic_return={item['episode']['r']}")
                             # writer.add_scalar("charts/episodic_return", item['episode']['r'], global_step)
-                            writer.add_scalar("charts/episodic_return", np.average(return_arr), global_step)
+                            writer.add_scalar("charts/episodic_return", item['episode']['r'], global_step)
                             writer.add_scalar("charts/episodic_length", item['episode']['l'], global_step)
                             break
             epsilon = epsilon * decay_parameter
@@ -480,7 +481,7 @@ if __name__ == "__main__":
         writer.add_scalar("charts/approx_kl", approx_kl.item(), global_step)
         writer.add_scalar("charts/clipfrac", np.mean(clipfracs), global_step)
         writer.add_scalar("charts/explained_variance", explained_var, global_step)
-        print("SPS: ", int(global_step / (time.time() - start_time)))
+        # print("SPS: ", int(global_step / (time.time() - start_time)))
         writer.add_scalar("charts/SPS", int(global_step / (time.time() - start_time)), global_step)
 
     envs.close()

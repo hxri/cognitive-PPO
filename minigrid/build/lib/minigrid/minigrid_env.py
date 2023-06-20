@@ -20,7 +20,7 @@ from minigrid.utils.rendering import (
     point_in_triangle,
     rotate_fn,
 )
-from minigrid.utils.window import Window
+# from minigrid.utils.window import Window
 
 TILE_PIXELS = 32
 
@@ -828,7 +828,7 @@ class MiniGridEnv(gym.Env):
 
     metadata = {
         "render_modes": ["human", "rgb_array"],
-        "render_fps": 10,
+        "render_fps": 32,
     }
 
     # Enumeration of possible actions
@@ -1377,6 +1377,7 @@ class MiniGridEnv(gym.Env):
             raise ValueError(f"Unknown action: {action}")
 
         if self.step_count >= self.max_steps:
+            reward = -1
             truncated = True
 
         if self.render_mode == "human":
@@ -1533,19 +1534,19 @@ class MiniGridEnv(gym.Env):
         else:
             return self.get_full_render(highlight, tile_size)
 
-    def render(self):
+    # def render(self):
 
-        img = self.get_frame(self.highlight, self.tile_size, self.agent_pov)
+    #     img = self.get_frame(self.highlight, self.tile_size, self.agent_pov)
 
-        if self.render_mode == "human":
-            if self.window is None:
-                self.window = Window("minigrid")
-                self.window.show(block=False)
-            self.window.set_caption(self.mission)
-            self.window.show_img(img)
-        elif self.render_mode == "rgb_array":
-            return img
+    #     if self.render_mode == "human":
+    #         if self.window is None:
+    #             self.window = Window("minigrid")
+    #             self.window.show(block=False)
+    #         # self.window.set_caption(self.mission)
+    #         self.window.show_img(img)
+    #     elif self.render_mode == "rgb_array":
+    #         return img
 
-    def close(self):
-        if self.window:
-            self.window.close()
+    # def close(self):
+    #     if self.window:
+    #         self.window.close()

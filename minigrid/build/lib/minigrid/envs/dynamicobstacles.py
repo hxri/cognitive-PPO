@@ -6,9 +6,7 @@ from minigrid.core.grid import Grid
 from minigrid.core.mission import MissionSpace
 from minigrid.core.world_object import Ball, Goal
 from minigrid.minigrid_env import MiniGridEnv
-
-import torch
-
+import random
 
 class DynamicObstaclesEnv(MiniGridEnv):
     """
@@ -70,7 +68,19 @@ class DynamicObstaclesEnv(MiniGridEnv):
     """
 
     def __init__(
-        self, size=8, agent_start_pos=(1, 1), agent_start_dir=0, n_obstacles=4, max_steps=4, n_goals=1, dynamic_wall=False, dynamic_goal=False, dynamic_obstacles=False, moving_goal=False, **kwargs
+        self,
+        size=8, 
+        agent_start_pos=(1, 1),
+        agent_start_dir=0,
+        n_obstacles=4,
+        max_steps=4,
+        n_goals=1,
+        dynamic_wall=False,
+        dynamic_goal=False,
+        dynamic_obstacles=False,
+        moving_goal=False,
+        wall_split=2,
+        **kwargs
     ):
         self.agent_start_pos = agent_start_pos
         self.agent_start_dir = agent_start_dir
@@ -101,6 +111,8 @@ class DynamicObstaclesEnv(MiniGridEnv):
         self.dynamic_obstacles = dynamic_obstacles
         self.moving_goal = moving_goal
         self.n_goals = n_goals
+        self.wall_x = wall_split
+        self.wall_y = wall_split
 
     def _gen_grid(self, width, height):
 
@@ -112,6 +124,39 @@ class DynamicObstaclesEnv(MiniGridEnv):
             self.grid.wall_rect(0, 0, width, height)
 
         else:
+            # # Create the grid
+            # self.grid = Grid(width, height)
+
+            # # Generate the surrounding walls
+            # self.grid.horz_wall(0, 0)
+            # self.grid.horz_wall(0, height - 1)
+            # self.grid.vert_wall(0, 0)
+            # self.grid.vert_wall(width - 1, 0)
+
+            # room_w = width // 2
+            # room_h = height // 2
+
+            # # For each row of rooms
+            # for j in range(0, 2):
+
+            #     # For each column
+            #     for i in range(0, 2):
+            #         xL = i * room_w
+            #         yT = j * room_h
+            #         xR = xL + room_w
+            #         yB = yT + room_h
+
+            #         # Bottom wall and door
+            #         if i + 1 < 2:
+            #             self.grid.vert_wall(xR, yT, room_h)
+            #             pos = (xR, self._rand_int(yT + 1, yB))
+            #             self.grid.set(*pos, None)
+
+            #         # Bottom wall and door
+            #         if j + 1 < 2:
+            #             self.grid.horz_wall(xL, yB, room_w)
+            #             pos = (self._rand_int(xL + 1, xR), yB)
+            #             self.grid.set(*pos, None)
             # Create the grid
             self.grid = Grid(width, height)
 
@@ -121,27 +166,27 @@ class DynamicObstaclesEnv(MiniGridEnv):
             self.grid.vert_wall(0, 0)
             self.grid.vert_wall(width - 1, 0)
 
-            room_w = width // 2
-            room_h = height // 2
+            room_w = width // self.wall_x
+            room_h = height // self.wall_y
 
             # For each row of rooms
-            for j in range(0, 2):
+            for j in range(0, self.wall_x):
 
                 # For each column
-                for i in range(0, 2):
+                for i in range(0, self.wall_y):
                     xL = i * room_w
                     yT = j * room_h
                     xR = xL + room_w
                     yB = yT + room_h
 
                     # Bottom wall and door
-                    if i + 1 < 2:
+                    if i + 1 < self.wall_y:
                         self.grid.vert_wall(xR, yT, room_h)
                         pos = (xR, self._rand_int(yT + 1, yB))
                         self.grid.set(*pos, None)
 
                     # Bottom wall and door
-                    if j + 1 < 2:
+                    if j + 1 < self.wall_x:
                         self.grid.horz_wall(xL, yB, room_w)
                         pos = (self._rand_int(xL + 1, xR), yB)
                         self.grid.set(*pos, None)
@@ -233,4 +278,5 @@ class DynamicObstaclesEnv(MiniGridEnv):
         info['goal_congruence'] = gc
         info['coping_potential'] = cp
 
+        # print(gc, cp, reward)
         return obs, reward, terminated, truncated, info

@@ -16,10 +16,10 @@ from torch.autograd import Variable
 
 # Environment parameters
 agent_view_size = 7
-max_steps = 400
-n_obstacles = 7
-size = 13
-agent_start_pos = None  # None = Dynamic start position
+max_steps = 1000
+n_obstacles = 14
+size = 21
+agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
 def make_env(gym_id, seed):
@@ -32,21 +32,16 @@ def make_env(gym_id, seed):
                        n_obstacles=n_obstacles,
                        size=size,
                        agent_start_pos=agent_start_pos,
-                       dynamic_wall=True,
+                       dynamic_wall=False,
                        dynamic_goal=True,
                        dynamic_obstacles=True,
-                       moving_goal=True,
-                       n_goals=1,
-                       wall_split=4)
+                       moving_goal=True)
         env = gym.wrappers.RecordEpisodeStatistics(env)
         env.reset(seed=seed)
         env.action_space.seed(seed)
         env.observation_space.seed(seed)
         return env
     return thunk
-
-def minmax(score):
-    return (score + 1) / 2
 
 # Weight and Bias intialization for PPO
 def layer_inint(layer, std=np.sqrt(2), bias_const=0.0):
@@ -95,7 +90,7 @@ class Agent(nn.Module):
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            # Attention(64),
+            Attention(64),
             nn.Flatten()
         )
 
@@ -258,9 +253,5 @@ if __name__ == "__main__":
     print("\n\n=======================================================")                  
     print("Plays = {}" .format(len(return_arr)))
     print("Wins = {}" .format(len(return_arr) - return_arr.count(-1.0)))
-    wins = len(return_arr) - return_arr.count(-1.0)
-    losses = len(return_arr) - wins
     print("Average return = {}" .format(np.average(list(filter(lambda a: a != -1.0, return_arr)))))
-    avg_r = np.average(list(filter(lambda a: a != -1.0, return_arr)))
-    print("Score = {}" .format(minmax(((wins * avg_r) + (losses * -1))/len(return_arr))))
     envs.close()

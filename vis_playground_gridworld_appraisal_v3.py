@@ -11,33 +11,36 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.distributions import Categorical
 import torch.nn.functional as F
-from torch.autograd import Variable
+from appraisal import motivational_relevance, novelty, certainity
+import matplotlib.pyplot as plt
+from collections import deque
 
 
 # Environment parameters
 agent_view_size = 7
-max_steps = 400
+max_steps = 100
 n_obstacles = 7
-size = 13
-agent_start_pos = None  # None = Dynamic start position
+size = 10
+agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
 def make_env(gym_id, seed):
     def thunk():
         # env = gym.make(gym_id)
         env = gym.make(gym_id,
-                       render_mode="human",
+                       render_mode=None,
                        max_steps=max_steps,
                        agent_view_size=agent_view_size,
                        n_obstacles=n_obstacles,
                        size=size,
                        agent_start_pos=agent_start_pos,
-                       dynamic_wall=True,
+                       dynamic_wall=False,
                        dynamic_goal=True,
                        dynamic_obstacles=True,
                        moving_goal=True,
                        n_goals=1,
-                       wall_split=4)
+                       wall_split=4,
+                       agent_pov=False)
         env = gym.wrappers.RecordEpisodeStatistics(env)
         env.reset(seed=seed)
         env.action_space.seed(seed)
@@ -54,11 +57,19 @@ def layer_inint(layer, std=np.sqrt(2), bias_const=0.0):
     torch.nn.init.constant_(layer.bias, bias_const)
     return layer
 
-# Weight and Bias intialization for PPO
-def layer_inint(layer, std=np.sqrt(2), bias_const=0.0):
-    torch.nn.init.orthogonal_(layer.weight, std)
-    torch.nn.init.constant_(layer.bias, bias_const)
-    return layer
+def appraisal_calc(obs=None, logits=None):
+    a1 = motivational_relevance(obs)
+    a2 = novelty(logits)
+    a3 = certainity(logits)
+    # a4 = coping_potential(logits)
+    # a5 = anticipation(logits)
+    # a6 = goal_congruence(logits)
+    app = torch.stack((a1, a2, a3), -1)
+    return app
+
+def reward_with_app(base_rw, mot_rel, nov):
+    new_rew = torch.where(base_rw == -1, base_rw, (base_rw + mot_rel + nov)/3)
+    return new_rew
 
 class Attention(nn.Module):
     def __init__(self, in_dim):
@@ -88,6 +99,9 @@ class Attention(nn.Module):
 class Agent(nn.Module):
     def __init__(self, envs):
         super(Agent, self).__init__()
+
+        self.appraisal_size = 6
+
         self.conv = nn.Sequential(
             nn.Conv2d(3, 16, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
@@ -95,12 +109,14 @@ class Agent(nn.Module):
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            # Attention(64),
+            Attention(64),
+            nn.ReLU(),
             nn.Flatten()
         )
 
         input_shape = (agent_view_size + 3, agent_view_size + 3)
         self.critic = nn.Sequential(
+            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
             nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
@@ -109,6 +125,7 @@ class Agent(nn.Module):
         )
 
         self.actor = nn.Sequential(
+            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
             nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
@@ -116,18 +133,41 @@ class Agent(nn.Module):
             nn.Linear(64, envs.single_action_space.n)
         )
 
-    def get_value(self, x):
-        x = self.conv(x.permute(0, 3, 1, 2))
-        return self.critic(x)
-    
-    def get_action_and_value(self, x, action=None):
-        x = self.conv(x.permute(0, 3, 1, 2))
+    def get_appraisal(self, x):
+        xe = self.conv(x.permute(0, 3, 1, 2))
+        app = appraisal_calc(x[:][..., 0], xe)
+        # print(app)
+        return app
 
-        logits = self.actor(x)
+    def get_value(self, x, appraisal):
+        x1 = self.conv(x.permute(0, 3, 1, 2))
+        # xe = torch.cat([x1, appraisal], dim=-1)
+        if(args.monitor_only):
+            xe = x1
+        else:
+            x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
+            xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+        cr = self.critic(xe)
+        napp = appraisal_calc(x[:][..., 0], cr)
+        return self.critic(xe), napp
+            
+    def get_action_and_value(self, x, appraisal, action=None):
+        x1 = self.conv(x.permute(0, 3, 1, 2))
+        # print([torch.max(x1), torch.min(x1)])
+        # xe = torch.cat([x1, appraisal], dim=-1)
+        if(args.monitor_only):
+            xe = x1
+        else:
+            x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
+            xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+        # print(xe)
+        logits = self.actor(xe)
+        napp = appraisal_calc(x[:][..., 0], logits)
         probs = Categorical(logits=logits)
         if action is None:
             action = probs.sample()
-        return action, probs.log_prob(action), probs.entropy(), self.critic(x)
+        return action, probs.log_prob(action), probs.entropy(), self.critic(xe), napp
+
 
 
 # Arguments
@@ -165,6 +205,12 @@ def parse_args():
                         nargs='?',
                         const=True,
                         help='If toggled, cuda will not be used')
+    parser.add_argument('--monitor-only',
+                        type=lambda x:bool(strtobool(x)),
+                        default=False,
+                        nargs='?',
+                        const=True,
+                        help='If toggled, enables appraisal monitoring only mode')
     
     # Algorithm specific
     parser.add_argument('--num-envs',
@@ -216,6 +262,11 @@ if __name__ == "__main__":
     rewards = torch.zeros((args.num_steps, args.num_envs)).to(device)
     dones = torch.zeros((args.num_steps, args.num_envs)).to(device)
     values = torch.zeros((args.num_steps, args.num_envs)).to(device)
+    appraisals = torch.zeros((args.num_steps, args.num_envs) + (6,)).to(device)
+
+    gc = torch.zeros((args.num_steps, args.num_envs)).to(device)
+    cp = torch.zeros((args.num_steps, args.num_envs)).to(device)
+    anti = torch.zeros((args.num_steps, args.num_envs)).to(device)
 
     # Try not to modify
     global_step = 0
@@ -223,38 +274,90 @@ if __name__ == "__main__":
     next_obs = torch.Tensor(envs.reset()[0]['image']).to(device)
     next_done = torch.zeros(args.num_envs).to(device)
     num_updates = args.total_timesteps // args.batch_size
+    next_appraisal = torch.tensor(agent.get_appraisal(next_obs))
+    next_appraisal = torch.cat((next_appraisal, torch.tensor([[0]]), torch.tensor([[0]]), torch.tensor([[0]])), dim=1)
 
     return_arr = []
+    gc_prev = 0
+    cp_prev = 0
+    flag = 0 
+
+    mot_rev = [deque(maxlen=10) for _ in range(6)]
+    plt.close()
+    plt.clf()
+    fig, axs = plt.subplots(6, 1, figsize=(5, 8), sharex=True)
+    fig.tight_layout(h_pad=3, w_pad=2, pad=4)
+    fig.canvas.setWindowTitle('Appraisals')
+    colors = ['blue', 'red', 'green', 'orange', 'purple', 'brown']
+    labels = ['Motivational Relevance', 'Novelty', 'Certainity', 'Goal Congruence', 'Coping Potential', 'Anticipation']
+
     for update in range(1, num_updates + 1):
+        start_time = time.time()
         for step in range(0, args.num_steps):
+                flag = 0 
                 global_step += 1 * args.num_envs
                 obs[step] = next_obs
                 dones[step] = next_done
 
                 # Action logic
                 with torch.no_grad():
-                    action, logprob, _, value = agent.get_action_and_value(next_obs)
+                    action, logprob, _, value, app = agent.get_action_and_value(next_obs, next_appraisal)
                     # print(action)
                     values[step] = value.flatten()
                 actions[step] = action
                 logprobs[step] = logprob
+                # appraisals[step] = app
+                # mot_rel = torch.stack([item[0] for item in app])
+                # nov = torch.stack([item[1] for item in app])
 
                 # Ty not to modify: execute game and log data
                 next_obs, reward, terminated, truncated, info = envs.step(action.cpu().numpy())
+                base_rw = torch.tensor(reward).to(device).view(-1)
+                if('final_info' in info):
+                    if('goal_congruence' in info['final_info'][0]):
+                        gc[step] = torch.tensor(info['final_info'][0]['goal_congruence'])
+                        cp[step] = torch.tensor(info['final_info'][0]['coping_potential'])
+                        gc_prev = gc[step]
+                        cp_prev = cp[step]
+                    else:
+                        gc[step] = gc_prev
+                        cp[step] = cp_prev
+                        flag = 1
+                else:
+                    gc[step] = torch.tensor(info['goal_congruence'])
+                    cp[step] = torch.tensor(info['coping_potential'])
+
                 # print(np.average(reward))
                 rewards[step] = torch.tensor(reward).to(device).view(-1)
+
+                anti[step] = (((rewards[step] * 0.99 -  values[step]) + 2) / 4)
+                app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
+                appraisals[step] = app
+                next_appraisal = app
+                # plt.clf()
+                plt.title("Appraisal values (last 10 steps)")
+                plt.xlabel("Step")
+                for i in range(6):
+                    mot_rev[i].append(app[0][i].item())
+                    axs[i].clear()
+                    axs[i].set_title(labels[i])
+                    axs[i].plot(mot_rev[i], color=colors[i])
+                plt.show(block=False)
+                # plt.pause(0.000001)
+
+                # rewards[step] = torch.tensor(reward_with_app(base_rw, mot_rel, nov)).to(device).view(-1)
                 next_obs, next_done = torch.Tensor(next_obs['image']).to(device), torch.Tensor(terminated).to(device)
                 # print(info)
                 time.sleep(.1)
                 if('final_info' in info):
+                    end_time = time.time()
                     for item in info['final_info']:
                         if(item):
                             # print(item)
                             if 'episode' in item.keys():
                                 return_arr.append(item['episode']['r'])
-                                # print(f"global_step={global_step}, episodic_return={np.average(return_arr)}")
-                                print(f"global_step={global_step}, episodic_return={item['episode']['r']}")
-                                break                    
+                                print(f"global_step={global_step}, episodic_return={item['episode']['r']}, time_per_episode={int(end_time - start_time)}, no_gc_cp={flag}")
+                                break  
     print("\n\n=======================================================")                  
     print("Plays = {}" .format(len(return_arr)))
     print("Wins = {}" .format(len(return_arr) - return_arr.count(-1.0)))

@@ -18,9 +18,9 @@ from collections import deque
 
 # Environment parameters
 agent_view_size = 7
-max_steps = 100
-n_obstacles = 7
-size = 11
+max_steps = 400
+n_obstacles = 16
+size = 23
 agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
@@ -37,9 +37,9 @@ def make_env(gym_id, seed):
                        dynamic_wall=False,
                        dynamic_goal=True,
                        dynamic_obstacles=True,
-                       moving_goal=False,
+                       moving_goal=True,
                        n_goals=1,
-                       wall_split=4,
+                       wall_split=2,
                        agent_pov=False)
         env = gym.wrappers.RecordEpisodeStatistics(env)
         env.reset(seed=seed)
@@ -142,11 +142,8 @@ class Agent(nn.Module):
     def get_value(self, x, appraisal):
         x1 = self.conv(x.permute(0, 3, 1, 2))
         # xe = torch.cat([x1, appraisal], dim=-1)
-        if(args.monitor_only):
-            xe = x1
-        else:
-            x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
-            xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+        xe = x1 + (0.01 * torch.rand(x1.shape))
+        xe = (xe - torch.min(xe)) / (torch.max(xe) - torch.min(xe))
         cr = self.critic(xe)
         napp = appraisal_calc(x[:][..., 0], cr)
         return self.critic(xe), napp
@@ -155,11 +152,8 @@ class Agent(nn.Module):
         x1 = self.conv(x.permute(0, 3, 1, 2))
         # print([torch.max(x1), torch.min(x1)])
         # xe = torch.cat([x1, appraisal], dim=-1)
-        if(args.monitor_only):
-            xe = x1
-        else:
-            x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
-            xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+        xe = x1 + (0.01 * torch.rand(x1.shape))
+        xe = (xe - torch.min(xe)) / (torch.max(xe) - torch.min(xe))
         # print(xe)
         logits = self.actor(xe)
         napp = appraisal_calc(x[:][..., 0], logits)
@@ -298,7 +292,6 @@ if __name__ == "__main__":
                 global_step += 1 * args.num_envs
                 obs[step] = next_obs
                 dones[step] = next_done
-                print(envs.window)
 
                 # Action logic
                 with torch.no_grad():

@@ -828,7 +828,7 @@ class MiniGridEnv(gym.Env):
 
     metadata = {
         "render_modes": ["human", "rgb_array"],
-        "render_fps": 32,
+        "render_fps": 10,
     }
 
     # Enumeration of possible actions
@@ -1534,19 +1534,19 @@ class MiniGridEnv(gym.Env):
         else:
             return self.get_full_render(highlight, tile_size)
 
-    # def render(self):
+    def render(self):
 
-    #     img = self.get_frame(self.highlight, self.tile_size, self.agent_pov)
+        img = self.get_frame(self.highlight, self.tile_size, self.agent_pov)
 
-    #     if self.render_mode == "human":
-    #         if self.window is None:
-    #             self.window = Window("minigrid")
-    #             self.window.show(block=False)
-    #         # self.window.set_caption(self.mission)
-    #         self.window.show_img(img)
-    #     elif self.render_mode == "rgb_array":
-    #         return img
+        if self.render_mode == "human":
+            if self.window is None:
+                self.window = Window("minigrid")
+                self.window.show(block=False)
+            # self.window.set_caption(self.mission)
+            self.window.show_img(img)
+        elif self.render_mode == "rgb_array":
+            return img
 
-    # def close(self):
-    #     if self.window:
-    #         self.window.close()
+    def close(self):
+        if self.window:
+            self.window.close()

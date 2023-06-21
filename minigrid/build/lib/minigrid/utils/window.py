@@ -33,6 +33,7 @@ class Window:
         def close_handler(evt):
             self.closed = True
 
+        self.fig = plt.gcf()
         self.fig.canvas.mpl_connect("close_event", close_handler)
 
     def show_img(self, img):

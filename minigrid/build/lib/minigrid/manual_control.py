@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--env", help="gym environment to load", default="MiniGrid-MultiRoom-N6-v0"
+        "--env", help="gym environment to load", default="MiniGrid-Dynamic-Obstacles-Random-10x10-v0"
     )
     parser.add_argument(
         "--seed",
@@ -99,10 +99,29 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    env = gym.make(
-        args.env,
-        tile_size=args.tile_size,
-    )
+    # env = gym.make(
+    #     args.env,
+    #     tile_size=args.tile_size,
+    # )
+    agent_view_size = 7
+    max_steps = 100
+    n_obstacles = 7
+    size = 10
+    agent_start_pos = None
+    env = gym.make(args.env,
+                       render_mode=None,
+                       max_steps=max_steps,
+                       agent_view_size=agent_view_size,
+                       n_obstacles=n_obstacles,
+                       size=size,
+                       agent_start_pos=agent_start_pos,
+                       dynamic_wall=False,
+                       dynamic_goal=True,
+                       dynamic_obstacles=True,
+                       moving_goal=True,
+                       n_goals=1,
+                       wall_split=4,
+                       agent_pov=False)
 
     if args.agent_view:
         env = RGBImgPartialObsWrapper(env)

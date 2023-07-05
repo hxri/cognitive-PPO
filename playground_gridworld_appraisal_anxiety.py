@@ -12,7 +12,8 @@ import torch.optim as optim
 from torch.distributions import Categorical
 import torch.nn.functional as F
 from appraisal import motivational_relevance, novelty, certainity
-import cv2
+from emotion import emotion, stress
+from anxiety import anxiety
 
 # Environment parameters
 agent_view_size = 7
@@ -24,7 +25,6 @@ agent_start_pos = None  # Dynamic start position
 # Make vectorized environment function
 def make_env(gym_id, seed, idx, capture_video, run_name):
     def thunk():
-        # env = gym.make(gym_id)
         env = gym.make(gym_id,
                        render_mode="rgb_array",
                        max_steps=max_steps,
@@ -33,6 +33,7 @@ def make_env(gym_id, seed, idx, capture_video, run_name):
                        size=size,
                        agent_start_pos=agent_start_pos,
                        dynamic_wall=False,
+                       see_through_walls=True,
                        dynamic_goal=True,
                        dynamic_obstacles=True,
                        moving_goal=False)
@@ -60,11 +61,36 @@ def appraisal_calc(obs=None, logits=None):
     app = torch.stack((a1, a2, a3), -1)
     return app
 
-def reward_with_app(base_rw, app):
-    # new_rew = torch.where(base_rw == -1, base_rw, base_rw * app)
-    new_rw = (base_rw.unsqueeze(-1) + 0.1 * torch.mean(app, dim=1, keepdim=True))
-    # print(new_rw)
-    return new_rw
+def minmax_val(value, minm, maxm):
+    return (value - minm) / (maxm - minm)
+
+def get_key_from_value(dictionary, value):
+    for key, val in dictionary.items():
+        if val == value:
+            return key
+    return None
+
+def res_emotion(appraisal_values):
+    mot, nov, cert, goalc, cop, antic = appraisal_values
+    # appraisal_values = [mot, minmax_val(nov, 0.0111, 4.0316), minmax_val(cert, 0.0085, 1.0876), goalc, cop, minmax_val(antic, 0.0402, 0.5072)]
+    weights = {
+        'fear': [0.4, 0.2, 0.1, 0.1, 0.1, 0.1],
+        'anger': [0.2, 0.1, 0.3, 0.1, 0.1, 0.2],
+        'joy': [0.2, 0.3, 0.2, 0.2, 0.1, 0.1],
+        'sadness': [0.1, 0.1, 0.2, 0.1, 0.3, 0.2],
+        'disgust': [0.1, 0.1, 0.1, 0.3, 0.1, 0.3],
+        'surprise': [0.1, 0.3, 0.1, 0.1, 0.1, 0.3]
+    }
+
+    emotion_values = {}
+
+    for emotion in weights:
+        weight_values = weights[emotion]
+        emotion_value = sum(appraisal_values[i] * weight_values[i] for i in range(len(appraisal_values)))
+        emotion_values[emotion] = emotion_value
+
+    return list(emotion_values.values()), get_key_from_value(emotion_values, max(emotion_values.values()))
+
 
 class Attention(nn.Module):
     def __init__(self, in_dim):
@@ -104,15 +130,14 @@ class Agent(nn.Module):
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            # Attention(64),
-            # nn.ReLU(),
+            Attention(64),
+            nn.ReLU(),
             nn.Flatten()
         )
 
         input_shape = (agent_view_size + 3, agent_view_size + 3)
         self.critic = nn.Sequential(
             nn.Linear(64*input_shape[0]*input_shape[1], 256),
-            # nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
@@ -121,7 +146,6 @@ class Agent(nn.Module):
 
         self.actor = nn.Sequential(
             nn.Linear(64*input_shape[0]*input_shape[1], 256),
-            # nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
@@ -131,32 +155,28 @@ class Agent(nn.Module):
     def get_appraisal(self, x):
         xe = self.conv(x.permute(0, 3, 1, 2))
         app = appraisal_calc(x[:][..., 0], xe)
-        # print(app)
         return app
 
-    def get_value(self, x, appraisal):
+    def get_value(self, x, appraisal, sts):
         x1 = self.conv(x.permute(0, 3, 1, 2))
-        # xe = torch.cat([x1, appraisal], dim=-1)
         if(args.monitor_only):
             xe = x1
         else:
+            appraisal = torch.cat([appraisal, sts], dim=-1)
             x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
             xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
         cr = self.critic(xe)
         napp = appraisal_calc(x[:][..., 0], cr)
         return self.critic(xe), napp
             
-    def get_action_and_value(self, x, appraisal, action=None):
+    def get_action_and_value(self, x, appraisal, sts, action=None):
         x1 = self.conv(x.permute(0, 3, 1, 2))
-        # print([torch.max(x1), torch.min(x1)])
-        # print(appraisal)
-        # xe = torch.cat([x1, appraisal], dim=-1)
         if(args.monitor_only):
             xe = x1
         else:
+            appraisal = torch.cat([appraisal, sts], dim=-1)
             x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
             xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
-        # print(xe)
         logits = self.actor(xe)
         napp = appraisal_calc(x[:][..., 0], logits)
         probs = Categorical(logits=logits)
@@ -352,7 +372,6 @@ if __name__ == "__main__":
     optimizer = optim.Adam(agent.parameters(), lr=args.learning_rate, eps=1e-5)
 
     # Algorithm specific setup
-
     obs = torch.zeros((args.num_steps, args.num_envs) + envs.single_observation_space['image'].shape).to(device)
     actions = torch.zeros((args.num_steps, args.num_envs)).to(device)
     logprobs = torch.zeros((args.num_steps, args.num_envs)).to(device)
@@ -365,21 +384,22 @@ if __name__ == "__main__":
     cp = torch.zeros((args.num_steps, args.num_envs)).to(device)
     anti = torch.zeros((args.num_steps, args.num_envs)).to(device)
 
+    sts = torch.zeros((args.num_steps, args.num_envs) + (1,)).to(device)
 
     # Try not to modify
     global_step = 0
     start_time = time.time()
     next_obs = torch.Tensor(envs.reset()[0]['image']).to(device)
-    # print(envs.reset()[0]['image'])
     next_done = torch.zeros(args.num_envs).to(device)
     num_updates = args.total_timesteps // args.batch_size
     next_appraisal = torch.tensor(agent.get_appraisal(next_obs))
     next_appraisal = torch.cat((next_appraisal, torch.tensor([[0], [0], [0], [0]]), torch.tensor([[0], [0], [0], [0]]), torch.tensor([[0], [0], [0], [0]])), dim=1)
-
+    next_sts = torch.tensor([[0], [0], [0], [0]])
     gc_prev = 0
     cp_prev = 0
 
     print(agent)
+    
 
     for update in range(1, num_updates + 1):
         # Early stop
@@ -393,6 +413,7 @@ if __name__ == "__main__":
             optimizer.param_groups[0]['lr'] = lrnow
 
         return_arr = -1
+        stress_level = []
         for step in range(0, args.num_steps):
             global_step += 1 * args.num_envs
             obs[step] = next_obs
@@ -401,23 +422,14 @@ if __name__ == "__main__":
 
             # Action logic
             with torch.no_grad():
-                action, logprob, _, value, app, x1 = agent.get_action_and_value(next_obs, next_appraisal)
-                # print(action)
+                action, logprob, _, value, app, x1 = agent.get_action_and_value(next_obs, next_appraisal, next_sts)
                 values[step] = value.flatten()
             actions[step] = action
             logprobs[step] = logprob
 
-            # x1 = x1.numpy()[0]
-            # x1 = (x1-np.min(x1))/(np.max(x1)-np.min(x1))
-            # jj = x1.reshape((80,80))
-            # cv2.imwrite('temp.png', jj*255)
-
             next_obs, reward, terminated, truncated, info = envs.step(action.cpu().numpy())
             base_rw = torch.tensor(reward).to(device).view(-1)
             
-            # print(info)
-            # gc[step] = torch.tensor(info['goal_congruence'])
-            # cp[step] = torch.tensor(info['coping_potential'])
             if('goal_congruence' in info):
                 gc[step] = torch.tensor(info['goal_congruence'])
                 cp[step] = torch.tensor(info['coping_potential'])
@@ -428,20 +440,21 @@ if __name__ == "__main__":
                 cp[step] = cp_prev
                 print("Not found GC")
             
-            # print(reward_with_app(base_rw, mot_rel))
-            # if (global_step < 50000):
-            #     rewards[step] = torch.tensor(reward).to(device).view(-1)
-            # else:
-            #     rewards[step] = reward_with_app(base_rw, mot_rel)
             rewards[step] = torch.tensor(reward).to(device).view(-1)
 
             anti[step] = (((rewards[step] * args.gamma -  values[step]) + 2) / 4)
-
             app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
             appraisals[step] = app
-            # print(appraisals[step])
             next_appraisal = app
-            # rewards[step] = torch.tensor(reward_with_app(base_rw, appraisals[step])).to(device).view(-1)
+            # print(appraisals[step])
+
+            # emo = emotion(app[0])
+            emo, state = res_emotion(app[0])
+            # print(state)
+            stress_level.append(stress(app[0]))
+            sts[step] = stress(app[0])
+            next_sts = sts[step]
+
             next_obs, next_done = torch.Tensor(next_obs['image']).to(device), torch.Tensor(terminated).to(device)
             # print(info)
             if('final_info' in info):
@@ -451,21 +464,15 @@ if __name__ == "__main__":
                         # print(item)
                         if 'episode' in item.keys():
                             return_arr = item['episode']['r'].item()
-                            print(f"global_step={global_step}, episodic_return={item['episode']['r']}")
-                            # if(len(return_arr > 3)):
-                            #     print(f"global_step={global_step}, episodic_return={np.average(return_arr)}")
-                            # else:
-                            #     print(f"global_step={global_step}, episodic_return={item['episode']['r']}")
-                            # writer.add_scalar("charts/episodic_return", item['episode']['r'], global_step)
+                            print(f"global_step={global_step}, episodic_return={item['episode']['r']}, stress_level={np.average(stress_level)}")
                             writer.add_scalar("charts/episodic_return", item['episode']['r'], global_step)
                             writer.add_scalar("charts/episodic_length", item['episode']['l'], global_step)
+                            stress_level = []
                             break
-                 
+               
         # bootstrap reward if not done with GAE
         with torch.no_grad():
-            # print(next_obs)
-            next_value, napp = agent.get_value(next_obs, appraisals[step])
-            # mot_rel = torch.stack([item[0] for item in napp])
+            next_value, _ = agent.get_value(next_obs, appraisals[step], sts[step])
             next_value = next_value.reshape(1, -1)
             if args.gae:
                 advantages = torch.zeros_like(rewards).to(device)
@@ -479,13 +486,6 @@ if __name__ == "__main__":
                         nextvalues = values[t+1]
                     delta = rewards[t] + args.gamma * nextvalues * nextnonterminal - values[t]
                     advantages[t] = lastgaelam = delta + args.gamma * args.gae_lambda * nextnonterminal * lastgaelam
-
-                    # Incorporate motivational relevance into advantages
-                    # print(advantages[t].shape)
-                    # print(napp.shape)
-                    # t1_prime = advantages[t].unsqueeze(1).expand_as(napp)
-                    # result = t1_prime * napp
-                    # advantages[t] = result.sum(dim=1)
                 returns = advantages + values
             else:
                 returns = torch.zeros_like(rewards).to(device)
@@ -497,10 +497,6 @@ if __name__ == "__main__":
                         nextnonterminal = 1.0 - dones[t+1]
                         next_return = returns[t+1]
                     returns[t] = rewards[t] + args.gamma * nextnonterminal * next_return
-                    
-                    # # Incorporate motivational relevance into returns
-                    # returns[t] = napp
-
                 advantages = returns - values
 
         # Flatten the batch
@@ -513,8 +509,8 @@ if __name__ == "__main__":
         b_appraisal = appraisals.reshape((-1,) + (6,))
         b_gc = gc.reshape(-1)
         b_cp = cp.reshape(-1)
+        b_sts = sts.reshape((-1,) + (1,))
         b_anti = anti.reshape(-1)
-
 
         # Optimizing the policy and value network
         b_inds = np.arange(args.batch_size)
@@ -524,9 +520,8 @@ if __name__ == "__main__":
             for start in range(0, args.batch_size, args.minibatch_size):
                 end = start + args.minibatch_size
                 mb_inds = b_inds[start:end]
-
                 _, newlogprob, entropy, newvalue, newapp, _ = agent.get_action_and_value(
-                    b_obs[mb_inds], b_appraisal[mb_inds], b_actions.long()[mb_inds]
+                    b_obs[mb_inds], b_appraisal[mb_inds], b_sts[mb_inds], b_actions.long()[mb_inds]
                 )
                 logratio = newlogprob - b_logprobs[mb_inds]
                 ratio = logratio.exp()
@@ -565,11 +560,12 @@ if __name__ == "__main__":
 
                 # Appraisal Loss
                 newapp = torch.cat((newapp, b_gc[mb_inds].unsqueeze(1), b_cp[mb_inds].unsqueeze(1), b_anti[mb_inds].unsqueeze(1)), dim=1)
-                # print(newapp)
-                appraisal_targets = torch.tensor([1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
-                # print(newapp)
+                appraisal_targets = torch.tensor([1.0, 0.0, 1.0, 1.0, 1.0, 0.0])
                 appraisal_loss = F.mse_loss(torch.mean(newapp, 0), appraisal_targets, reduction='none').mean(-1, keepdim=True)
+                sts_loss = F.mse_loss(torch.mean(b_sts[mb_inds], 0), torch.tensor([0.0]), reduction='none').mean(-1, keepdim=True)
+
                 # appraisal_loss = F.kl_div(torch.mean(newapp, 0), appraisal_targets, reduction='batchmean').mean(-1, keepdim=True)
+                # sts_loss = torch.mean(b_sts[mb_inds], 0)
                 
                 if(args.monitor_only):
                     loss = pg_loss - args.ent_coef * entropy_loss + args.vf_coef * v_loss
@@ -588,16 +584,18 @@ if __name__ == "__main__":
         var_y = np.var(y_true)
         explained_var = np.nan if var_y == 0 else 1 - np.var(y_true - y_pred) / var_y
 
-        print("\nGS {} | R {:.3f} | lr {:.3e} | vL {:.3f} | pL {:.3f} | E {:.3f} | KL {:.3f} | cF {:.3f} | eVar {:.3f} | aL {:.3f} | SPS {}\n" .format(global_step,
+        print("\nGS {} | R {:.3f} | lr {:.3e} | vL {:.3f} | pL {:.3f} | tL {:.3f} | E {:.3f} | KL {:.3f} | cF {:.3f} | eVar {:.3f} | aL {:.3f} | stsL {:.3f} | SPS {}\n" .format(global_step,
                                                                                                                                                    return_arr, 
                                                                                                                                                     optimizer.param_groups[0]['lr'],
                                                                                                                                                     v_loss.item(),
                                                                                                                                                     pg_loss.item(),
+                                                                                                                                                    loss.item(),
                                                                                                                                                     entropy_loss.item(),
                                                                                                                                                     approx_kl.item(),
                                                                                                                                                     np.mean(clipfracs),
                                                                                                                                                     explained_var,
                                                                                                                                                     appraisal_loss.item(),
+                                                                                                                                                    sts_loss.item(),
                                                                                                                                                     int(global_step / (time.time() - start_time)),))
         # Try not to modify: record rewards for plotting
         writer.add_scalar("charts/learning_rate", optimizer.param_groups[0]['lr'], global_step)

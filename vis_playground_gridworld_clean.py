@@ -14,14 +14,14 @@ import torch.nn.functional as F
 from appraisal import motivational_relevance, novelty, certainity
 import matplotlib.pyplot as plt
 from collections import deque
-from emotion import emotion
-from anxiety import anxiety
+from emotion import stress, emo_app, norm_app, stress
+
 
 # Environment parameters
 agent_view_size = 7
 max_steps = 100
 n_obstacles = 7
-size = 10
+size = 14
 agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
@@ -51,6 +51,23 @@ def make_env(gym_id, seed):
 
 def minmax(score):
     return (score + 1) / 2
+
+def count_sequence_occurrences(numbers, sequence):
+    count = 0
+    sequence_length = len(sequence)
+    for i in range(len(numbers) - sequence_length + 1):
+        if numbers[i:i + sequence_length] == sequence:
+            count += 1
+    return count
+
+def count_string_occurrences(strings):
+    occurrences = {}
+    for string in strings:
+        if string in occurrences:
+            occurrences[string] += 1
+        else:
+            occurrences[string] = 1
+    return occurrences
 
 # Weight and Bias intialization for PPO
 def layer_inint(layer, std=np.sqrt(2), bias_const=0.0):
@@ -109,66 +126,78 @@ class Agent(nn.Module):
             nn.Conv2d(16, 32, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
-            # nn.ReLU(),
-            # Attention(64),
+            nn.ReLU(),
+            Attention(64),
             nn.ReLU(),
             nn.Flatten()
         )
 
         input_shape = (agent_view_size + 3, agent_view_size + 3)
         self.critic = nn.Sequential(
-            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
-            nn.Linear(64*input_shape[0]*input_shape[1], 256),
+            nn.Linear(64*input_shape[0]*input_shape[1] + 6, 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
-            nn.Linear(64, 1)
+            nn.Linear(64, 1),
+            nn.Tanh()
         )
-
         self.actor = nn.Sequential(
-            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
-            nn.Linear(64*input_shape[0]*input_shape[1], 256),
+            nn.Linear(64*input_shape[0]*input_shape[1] + 6, 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
             nn.Linear(64, envs.single_action_space.n)
         )
+        self.NRE = nn.Sequential(
+            nn.Linear(envs.single_action_space.n, 16),
+            nn.Tanh(),
+            nn.Linear(16, 8),
+            nn.Tanh(),
+            nn.Linear(8, 1),
+            nn.Tanh()
+        )
 
-    def get_appraisal(self, x):
+    def get_appraisal(self, x, temp, sts):
         xe = self.conv(x.permute(0, 3, 1, 2))
-        app = appraisal_calc(x[:][..., 0], xe)
-        # print(app)
+        if(args.monitor_only):
+            app = appraisal_calc(x[:][..., 0], self.actor(xe))
+        else:
+            # temp = torch.cat([temp, sts], dim=-1)
+            # x2 = torch.mean((xe.unsqueeze(2) * temp.unsqueeze(1)), dim=2)
+            # xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+            xe = torch.cat([xe, temp], dim=-1)
+            app = appraisal_calc(x[:][..., 0], self.actor(xe))
         return app
 
-    def get_value(self, x, appraisal):
+    def get_value(self, x, appraisal, sts):
         x1 = self.conv(x.permute(0, 3, 1, 2))
-        # xe = torch.cat([x1, appraisal], dim=-1)
         if(args.monitor_only):
             xe = x1
         else:
-            x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
-            xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
-        cr = self.critic(xe)
+            # appraisal = torch.cat([appraisal, sts], dim=-1)
+            # x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
+            # xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+            xe = torch.cat([x1, appraisal], dim=-1)
+        cr = self.actor(xe)
         napp = appraisal_calc(x[:][..., 0], cr)
         return self.critic(xe), napp
             
-    def get_action_and_value(self, x, appraisal, action=None):
+    def get_action_and_value(self, x, appraisal, sts, action=None):
         x1 = self.conv(x.permute(0, 3, 1, 2))
-        # print([torch.max(x1), torch.min(x1)])
-        # xe = torch.cat([x1, appraisal], dim=-1)
         if(args.monitor_only):
             xe = x1
         else:
-            x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
-            xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
-        # print(xe)
+            # appraisal = torch.cat([appraisal, sts], dim=-1)
+            # x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
+            # xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+            xe = torch.cat([x1, appraisal], dim=-1)
         logits = self.actor(xe)
-        napp = appraisal_calc(x[:][..., 0], logits)
+        napp = appraisal_calc(x[:][..., 0], self.actor(xe))  
         probs = Categorical(logits=logits)
         if action is None:
             action = probs.sample()
-        return action, probs.log_prob(action), probs.entropy(), self.critic(xe), napp
-
+        n_reward = self.NRE(logits).squeeze(1)
+        return action, probs.log_prob(action), probs.entropy(), self.critic(xe), napp, n_reward
 
 
 # Arguments
@@ -264,10 +293,12 @@ if __name__ == "__main__":
     dones = torch.zeros((args.num_steps, args.num_envs)).to(device)
     values = torch.zeros((args.num_steps, args.num_envs)).to(device)
     appraisals = torch.zeros((args.num_steps, args.num_envs) + (6,)).to(device)
+    n_rewards = torch.zeros((args.num_steps, args.num_envs)).to(device)
 
     gc = torch.zeros((args.num_steps, args.num_envs)).to(device)
     cp = torch.zeros((args.num_steps, args.num_envs)).to(device)
     anti = torch.zeros((args.num_steps, args.num_envs)).to(device)
+    sts = torch.zeros((args.num_steps, args.num_envs) + (1,)).to(device)
 
     # Try not to modify
     global_step = 0
@@ -275,26 +306,29 @@ if __name__ == "__main__":
     next_obs = torch.Tensor(envs.reset()[0]['image']).to(device)
     next_done = torch.zeros(args.num_envs).to(device)
     num_updates = args.total_timesteps // args.batch_size
-    next_appraisal = torch.tensor(agent.get_appraisal(next_obs))
-    next_appraisal = torch.cat((next_appraisal, torch.tensor([[0]]), torch.tensor([[0]]), torch.tensor([[0]])), dim=1)
+    temp_app = torch.cat((torch.tensor([[0.1]]),
+                          torch.tensor([[0.1]]),
+                          torch.tensor([[0.1]]),
+                          torch.tensor([[0.1]]),
+                          torch.tensor([[0.1]]),
+                          torch.tensor([[0.1]])), dim=1)
+    next_sts = torch.tensor([[0.1]])
+    next_appraisal = torch.tensor(agent.get_appraisal(next_obs, temp_app, next_sts))
+    next_appraisal = torch.cat((next_appraisal, torch.tensor([[0.1]]), torch.tensor([[0.1]]), torch.tensor([[0.1]])), dim=1)
 
     return_arr = []
     gc_prev = 0
     cp_prev = 0
     flag = 0 
 
-    mot_rev = [deque(maxlen=10) for _ in range(6)]
-    # plt.close()
-    # plt.clf()
-    # fig, axs = plt.subplots(6, 1, figsize=(5, 8), sharex=True)
-    # fig.tight_layout(h_pad=3, w_pad=2, pad=4)
-    # fig.canvas.setWindowTitle('Appraisals')
-    # colors = ['blue', 'red', 'green', 'orange', 'purple', 'brown']
-    # labels = ['Motivational Relevance', 'Novelty', 'Certainity', 'Goal Congruence', 'Coping Potential', 'Anticipation']
-    s_anx = []
-    t_anx = []  
+    emotion_arr = []
+    sts_arr = []
+    aversions = []
+    act_arr = []
+
     for update in range(1, num_updates + 1):
         start_time = time.time()
+        stress_level = []
         for step in range(0, args.num_steps):
             flag = 0 
             global_step += 1 * args.num_envs
@@ -304,14 +338,16 @@ if __name__ == "__main__":
 
             # Action logic
             with torch.no_grad():
-                action, logprob, _, value, app = agent.get_action_and_value(next_obs, next_appraisal)
+                action, logprob, _, value, app, n_reward = agent.get_action_and_value(next_obs, next_appraisal, next_sts)
                 # print(action)
                 values[step] = value.flatten()
             actions[step] = action
+            act_arr.append(action.detach().numpy()[0])
             logprobs[step] = logprob
+            n_rewards[step] = n_reward
             # appraisals[step] = app
             # mot_rel = torch.stack([item[0] for item in app])
-            # nov = torch.stack([item[1] for item in app])
+            # nov = torch.stack([item[1] for item in app])normminmax_val
 
             # Ty not to modify: execute game and log data
             next_obs, reward, terminated, truncated, info = envs.step(action.cpu().numpy())
@@ -330,45 +366,33 @@ if __name__ == "__main__":
                 gc[step] = torch.tensor(info['goal_congruence'])
                 cp[step] = torch.tensor(info['coping_potential'])
 
+            
             # print(np.average(reward))
-            rewards[step] = torch.tensor(reward).to(device).view(-1)
-
-            anti[step] = (((rewards[step] * 0.99 -  values[step]) + 2) / 4)
+            rw = torch.tensor(reward).to(device).view(-1)
+            rewards[step] = rw - 0.1 * (1-cp[step]) # (0.1 * (1-app[:, 0]) + 0.1 * (cp[step])) # - 0.1 * (1-cp[step]) - 0.1 * (app[0][1])
+            anti[step] = 1 - torch.abs(rewards[step] -  n_rewards[step])
             app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
+            # print(app)
+            stress_level.append(stress(app))
+            sts_arr.append(stress(app))
+            sts[step] = stress(app)
+            next_sts = sts[step]
             appraisals[step] = app
             next_appraisal = app
-            emo = emotion(app[0])
-            # print("Emotion : ",  emo)
-            anx = anxiety(emo)
-            s_anx.append(anx[0])
-            t_anx.append(anx[1])
-            # plt.clf()
-            # plt.title("Appraisal values (last 10 steps)")
-            # plt.xlabel("Step")
-            # for i in range(6):
-            #     mot_rev[i].append(app[0][i].item())
-            #     axs[i].clear()
-            #     axs[i].set_title(labels[i])
-            #     axs[i].plot(mot_rev[i], color=colors[i])
-            # plt.show(block=False)
-            # plt.pause(0.000001)
-
-            # rewards[step] = torch.tensor(reward_with_app(base_rw, mot_rel, nov)).to(device).view(-1)
+            emotion_arr.append(emo_app(app[0]))
+        
             next_obs, next_done = torch.Tensor(next_obs['image']).to(device), torch.Tensor(terminated).to(device)
-            # print(info)
             time.sleep(.1)
             if('final_info' in info):
                 end_time = time.time()
                 for item in info['final_info']:
                     if(item):
-                        # print(item)
                         if 'episode' in item.keys():
                             return_arr.append(item['episode']['r'])
-                            print(f"global_step={global_step}, episodic_return={item['episode']['r']}, time_per_episode={int(end_time - start_time)}, no_gc_cp={flag}")
-                            # print('\nState Anxiety : {} | {} | {}' .format(np.average(s_anx), np.max(s_anx), np.min(s_anx)))
-                            # print('Trait Anxiety : {} | {} | {}' .format(np.average(t_anx), np.max(t_anx), np.min(t_anx)))
-                            s_anx = []
-                            t_anx = []    
+                            print(f"global_step={global_step}, episodic_return={item['episode']['r']}, stress_level={np.average(stress_level)}")
+                            aversions.append(count_sequence_occurrences(act_arr, [2, 0, 2]) + count_sequence_occurrences(act_arr, [2, 1, 2]))
+                            stress_level = []
+                            act_arr = []
                             break            
     print("\n\n=======================================================")                  
     print("Plays = {}" .format(len(return_arr)))
@@ -376,6 +400,13 @@ if __name__ == "__main__":
     wins = len(return_arr) - return_arr.count(-1.0)
     losses = len(return_arr) - wins
     print("Average return = {}" .format(np.average(list(filter(lambda a: a != -1.0, return_arr)))))
+    print("Average stress level = {}" .format(np.average(sts_arr)))
+    print("Total Aversions = {}" .format(np.sum(aversions)))
+    occurrences = count_string_occurrences(emotion_arr)
+    emos = {'Anger': 0, 'Disgust': 0, 'Fear': 0, 'Guilt': 0, 'Joy': 0, 'Sadness': 0, 'Shame': 0}
+    for string, count in occurrences.items():
+        emos[string] = count
+    print("Emotion count = {}" .format(emos))
     avg_r = np.average(list(filter(lambda a: a != -1.0, return_arr)))
     print("Score = {}" .format(minmax(((wins * avg_r) + (losses * -1))/len(return_arr))))
     envs.close()

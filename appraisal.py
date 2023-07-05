@@ -18,7 +18,7 @@ def motivational_relevance(obs):
         idx, goal_pos = goal[0], goal[1:]
         dist = torch.norm(agent_pos[idx] - goal_pos.float(), 1)
         relevance[idx] = 1 - (dist - 1) / (2 * (w - 1))
-    norm = 1/(1+torch.exp(relevance))
+    norm = relevance # 1/(1+torch.exp(relevance))
     return norm
 
 def novelty(logits):
@@ -29,23 +29,14 @@ def novelty(logits):
     batch_size, num_actions = logits.size()
     P = torch.softmax(logits, dim=1)
     Q = torch.full(P.size(), 1 / num_actions)
-    nov = -torch.sum(Q * torch.log(Q / P), dim=1)
-    norm = 1/(1+torch.exp(nov))
+    nov = torch.sum(Q * torch.log(Q / P), dim=1)
+    norm = nov / (1 + nov) # https://stackoverflow.com/questions/46744076/machine-learning-normalizing-features-with-no-theoretical-maximum-value
     return norm
 
-def certainity(logits): # Entropy
-    """
-    Computes the coping potential of an RL agent given the logits predicted by the model.
-
-    Args:
-        logits: A tensor of shape (batch_size, num_actions) containing the logits for each action.
-
-    Returns:
-        A tensor of shape (batch_size,) containing the coping potential for each example in the batch.
-    """
-    probs = F.softmax(logits, dim=1)
+def certainity(logits):
+    probs = F.softmax(logits, dim=1)    
     entropy = -torch.sum(probs * torch.log(probs), dim=1)
-    norm = 1/(1+torch.exp(entropy))
+    norm = entropy / (1 + entropy) # 1/(1+torch.exp(entropy))
     return norm
 
 def coping_potential(logits):

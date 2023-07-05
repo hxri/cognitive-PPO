@@ -6,7 +6,7 @@ from minigrid.core.grid import Grid
 from minigrid.core.mission import MissionSpace
 from minigrid.core.world_object import Ball, Goal
 from minigrid.minigrid_env import MiniGridEnv
-import random
+import numpy as np
 
 class DynamicObstaclesEnv(MiniGridEnv):
     """
@@ -80,6 +80,7 @@ class DynamicObstaclesEnv(MiniGridEnv):
         dynamic_obstacles=False,
         moving_goal=False,
         wall_split=2,
+        see_through_walls=False,
         **kwargs
     ):
         self.agent_start_pos = agent_start_pos
@@ -100,7 +101,7 @@ class DynamicObstaclesEnv(MiniGridEnv):
             grid_size=size,
             max_steps=max_steps,
             # Set this to True for maximum speed
-            see_through_walls=True,
+            see_through_walls=see_through_walls,
             **kwargs
         )
         # Allow only 3 actions permitted: left, right, forward
@@ -221,7 +222,7 @@ class DynamicObstaclesEnv(MiniGridEnv):
         if action >= self.action_space.n:
             action = 0
 
-        # Check if there is an obstacle in front of the agent
+        # Check if there is an obstacle in front of the agent 
         front_cell = self.grid.get(*self.front_pos)
         not_clear = front_cell and front_cell.type != "goal"
 
@@ -254,7 +255,6 @@ class DynamicObstaclesEnv(MiniGridEnv):
 
         # Update the agent's position/direction
         obs, reward, terminated, truncated, info = super().step(action)
-
         # If the agent tried to walk over an obstacle or wall
         if action == self.actions.forward and not_clear:
             reward = -1
@@ -263,11 +263,12 @@ class DynamicObstaclesEnv(MiniGridEnv):
         
         for i_goal in range(len(self.goals)):
             if super().agent_sees(self.goals[i_goal].cur_pos[0], self.goals[i_goal].cur_pos[1]):
-                gc = 1
+                p1 = np.array((self.goals[i_goal].cur_pos[0], self.goals[i_goal].cur_pos[1]))
+                p2 = np.array(self.agent_pos)
+                gc = 1 - (np.linalg.norm(p1 - p2) / 12.73)
             else:
                 gc = 0
         # print("Goal congruence: {}" .format(gc))
-        
         x = 0
         for i_obst in range(len(self.obstacles)):
             if super().agent_sees(self.obstacles[i_obst].cur_pos[0], self.obstacles[i_obst].cur_pos[1]):

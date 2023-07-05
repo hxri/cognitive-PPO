@@ -14,8 +14,7 @@ import torch.nn.functional as F
 from appraisal import motivational_relevance, novelty, certainity
 import matplotlib.pyplot as plt
 from collections import deque
-from emotion import emotion
-from anxiety import anxiety
+from emotion import emotion, stress
 
 # Environment parameters
 agent_view_size = 7
@@ -23,6 +22,9 @@ max_steps = 100
 n_obstacles = 7
 size = 10
 agent_start_pos = None  # Dynamic start position
+
+def minmax_val(value, minm, maxm):
+    return (value - minm) / (maxm - minm)
 
 # Make vectorized environment function
 def make_env(gym_id, seed):
@@ -36,12 +38,13 @@ def make_env(gym_id, seed):
                        size=size,
                        agent_start_pos=agent_start_pos,
                        dynamic_wall=False,
+                       see_through_walls=True,
                        dynamic_goal=True,
                        dynamic_obstacles=True,
                        moving_goal=True,
                        n_goals=1,
                        wall_split=2,
-                       agent_pov=False)
+                       agent_pov=False,)
         env = gym.wrappers.RecordEpisodeStatistics(env)
         env.reset(seed=seed)
         env.action_space.seed(seed)
@@ -62,15 +65,56 @@ def appraisal_calc(obs=None, logits=None):
     a1 = motivational_relevance(obs)
     a2 = novelty(logits)
     a3 = certainity(logits)
-    # a4 = coping_potential(logits)
-    # a5 = anticipation(logits)
-    # a6 = goal_congruence(logits)
     app = torch.stack((a1, a2, a3), -1)
     return app
 
 def reward_with_app(base_rw, mot_rel, nov):
     new_rew = torch.where(base_rw == -1, base_rw, (base_rw + mot_rel + nov)/3)
     return new_rew
+
+def count_sequence_occurrences(numbers, sequence):
+    count = 0
+    sequence_length = len(sequence)
+    for i in range(len(numbers) - sequence_length + 1):
+        if numbers[i:i + sequence_length] == sequence:
+            count += 1
+    return count
+
+def get_key_from_value(dictionary, value):
+    for key, val in dictionary.items():
+        if val == value:
+            return key
+    return None
+
+def res_emotion(appraisal_values):
+    mot, nov, cert, goalc, cop, antic = appraisal_values
+    # appraisal_values = [mot, minmax_val(nov, 0.0111, 4.0316), minmax_val(cert, 0.0085, 1.0876), goalc, cop, minmax_val(antic, 0.0402, 0.5072)]
+    weights = {
+        'fear': [0.4, 0.2, 0.1, 0.1, 0.1, 0.1],
+        'anger': [0.2, 0.1, 0.3, 0.1, 0.1, 0.2],
+        'joy': [0.2, 0.3, 0.2, 0.2, 0.1, 0.1],
+        'sadness': [0.1, 0.1, 0.2, 0.1, 0.3, 0.2],
+        'disgust': [0.1, 0.1, 0.1, 0.3, 0.1, 0.3],
+        'surprise': [0.1, 0.3, 0.1, 0.1, 0.1, 0.3]
+    }
+
+    emotion_values = {}
+
+    for emotion in weights:
+        weight_values = weights[emotion]
+        emotion_value = sum(appraisal_values[i] * weight_values[i] for i in range(len(appraisal_values)))
+        emotion_values[emotion] = emotion_value
+
+    return get_key_from_value(emotion_values, max(emotion_values.values()))
+
+def count_string_occurrences(strings):
+    occurrences = {}
+    for string in strings:
+        if string in occurrences:
+            occurrences[string] += 1
+        else:
+            occurrences[string] = 1
+    return occurrences
 
 class Attention(nn.Module):
     def __init__(self, in_dim):
@@ -95,7 +139,7 @@ class Attention(nn.Module):
         out = out.view(*x.size())
         out = self.gamma * out + x
         return out
-
+    
 # Agent model
 class Agent(nn.Module):
     def __init__(self, envs):
@@ -109,15 +153,14 @@ class Agent(nn.Module):
             nn.Conv2d(16, 32, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
-            # nn.ReLU(),
-            # Attention(64),
+            nn.ReLU(),
+            Attention(64),
             nn.ReLU(),
             nn.Flatten()
         )
 
         input_shape = (agent_view_size + 3, agent_view_size + 3)
         self.critic = nn.Sequential(
-            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
             nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
@@ -126,7 +169,6 @@ class Agent(nn.Module):
         )
 
         self.actor = nn.Sequential(
-            # nn.Linear(64*input_shape[0]*input_shape[1] + self.appraisal_size, 256),
             nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
@@ -140,25 +182,25 @@ class Agent(nn.Module):
         # print(app)
         return app
 
-    def get_value(self, x, appraisal):
+    def get_value(self, x, appraisal, sts):
         x1 = self.conv(x.permute(0, 3, 1, 2))
-        # xe = torch.cat([x1, appraisal], dim=-1)
         if(args.monitor_only):
             xe = x1
         else:
+            appraisal = torch.cat([appraisal, sts], dim=-1)
             x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
             xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
         cr = self.critic(xe)
         napp = appraisal_calc(x[:][..., 0], cr)
         return self.critic(xe), napp
             
-    def get_action_and_value(self, x, appraisal, action=None):
+    def get_action_and_value(self, x, appraisal, sts, action=None):
         x1 = self.conv(x.permute(0, 3, 1, 2))
         # print([torch.max(x1), torch.min(x1)])
-        # xe = torch.cat([x1, appraisal], dim=-1)
         if(args.monitor_only):
             xe = x1
         else:
+            appraisal = torch.cat([appraisal, sts], dim=-1)
             x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
             xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
         # print(xe)
@@ -268,6 +310,7 @@ if __name__ == "__main__":
     gc = torch.zeros((args.num_steps, args.num_envs)).to(device)
     cp = torch.zeros((args.num_steps, args.num_envs)).to(device)
     anti = torch.zeros((args.num_steps, args.num_envs)).to(device)
+    sts = torch.zeros((args.num_steps, args.num_envs) + (1,)).to(device)
 
     # Try not to modify
     global_step = 0
@@ -277,13 +320,17 @@ if __name__ == "__main__":
     num_updates = args.total_timesteps // args.batch_size
     next_appraisal = torch.tensor(agent.get_appraisal(next_obs))
     next_appraisal = torch.cat((next_appraisal, torch.tensor([[0]]), torch.tensor([[0]]), torch.tensor([[0]])), dim=1)
+    next_sts = torch.tensor([[0]])
 
     return_arr = []
     gc_prev = 0
     cp_prev = 0
     flag = 0 
 
-    mot_rev = [deque(maxlen=10) for _ in range(6)]
+    sts_arr = []
+    act_arr = []
+    aversions = []
+    emotion_arr = []
     # plt.close()
     # plt.clf()
     # fig, axs = plt.subplots(6, 1, figsize=(5, 8), sharex=True)
@@ -291,10 +338,10 @@ if __name__ == "__main__":
     # fig.canvas.setWindowTitle('Appraisals')
     # colors = ['blue', 'red', 'green', 'orange', 'purple', 'brown']
     # labels = ['Motivational Relevance', 'Novelty', 'Certainity', 'Goal Congruence', 'Coping Potential', 'Anticipation']
-    s_anx = []
-    t_anx = []  
+    
     for update in range(1, num_updates + 1):
         start_time = time.time()
+        stress_level = []
         for step in range(0, args.num_steps):
             flag = 0 
             global_step += 1 * args.num_envs
@@ -304,10 +351,11 @@ if __name__ == "__main__":
 
             # Action logic
             with torch.no_grad():
-                action, logprob, _, value, app = agent.get_action_and_value(next_obs, next_appraisal)
+                action, logprob, _, value, app = agent.get_action_and_value(next_obs, next_appraisal, next_sts)
                 # print(action)
                 values[step] = value.flatten()
             actions[step] = action
+            act_arr.append(action.detach().numpy()[0])
             logprobs[step] = logprob
             # appraisals[step] = app
             # mot_rel = torch.stack([item[0] for item in app])
@@ -333,15 +381,16 @@ if __name__ == "__main__":
             # print(np.average(reward))
             rewards[step] = torch.tensor(reward).to(device).view(-1)
 
-            anti[step] = (((rewards[step] * 0.99 -  values[step]) + 2) / 4)
+            anti[step] = ((rewards[step] * 0.99 -  values[step]) + 2) / 4
             app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
             appraisals[step] = app
             next_appraisal = app
-            emo = emotion(app[0])
-            # print("Emotion : ",  emo)
-            anx = anxiety(emo)
-            s_anx.append(anx[0])
-            t_anx.append(anx[1])
+
+            emo = res_emotion(app[0])
+            emotion_arr.append(emo)
+            stress_level.append(stress(app[0]))
+            sts[step] = stress(app[0])
+            next_sts = sts[step]
             # plt.clf()
             # plt.title("Appraisal values (last 10 steps)")
             # plt.xlabel("Step")
@@ -363,12 +412,13 @@ if __name__ == "__main__":
                     if(item):
                         # print(item)
                         if 'episode' in item.keys():
+                            avg_sts = np.average((stress_level-np.min(stress_level))/(np.max(stress_level)-np.min(stress_level) + 0.001))
                             return_arr.append(item['episode']['r'])
-                            print(f"global_step={global_step}, episodic_return={item['episode']['r']}, time_per_episode={int(end_time - start_time)}, no_gc_cp={flag}")
-                            # print('\nState Anxiety : {} | {} | {}' .format(np.average(s_anx), np.max(s_anx), np.min(s_anx)))
-                            # print('Trait Anxiety : {} | {} | {}' .format(np.average(t_anx), np.max(t_anx), np.min(t_anx)))
-                            s_anx = []
-                            t_anx = []    
+                            print(f"global_step={global_step}, episodic_return={item['episode']['r']}, time_per_episode={int(end_time - start_time)}, stress_level={avg_sts}")
+                            aversions.append(count_sequence_occurrences(act_arr, [2, 0, 2]) + count_sequence_occurrences(act_arr, [2, 1, 2]))
+                            sts_arr.append(avg_sts)
+                            stress_level = []
+                            act_arr = []
                             break            
     print("\n\n=======================================================")                  
     print("Plays = {}" .format(len(return_arr)))
@@ -376,6 +426,14 @@ if __name__ == "__main__":
     wins = len(return_arr) - return_arr.count(-1.0)
     losses = len(return_arr) - wins
     print("Average return = {}" .format(np.average(list(filter(lambda a: a != -1.0, return_arr)))))
+    print("Average stress level = {}" .format(np.average(list(filter(lambda a: a != 0.0, sts_arr)))))
+    print("Total Aversions = {}" .format(np.sum(aversions)))
+
+    occurrences = count_string_occurrences(emotion_arr)
+    emos = {}
+    for string, count in occurrences.items():
+        emos[string] = count
+    print("Emotion count = {}" .format(emos))
     avg_r = np.average(list(filter(lambda a: a != -1.0, return_arr)))
     print("Score = {}" .format(minmax(((wins * avg_r) + (losses * -1))/len(return_arr))))
     envs.close()

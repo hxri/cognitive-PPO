@@ -12,13 +12,14 @@ import torch.optim as optim
 from torch.distributions import Categorical
 import torch.nn.functional as F
 from torch.autograd import Variable
-
+import cv2
+from captum.attr import LayerGradCam
 
 # Environment parameters
 agent_view_size = 7
 max_steps = 400
 n_obstacles = 7
-size = 13
+size = 11
 agent_start_pos = None  # None = Dynamic start position
 
 # Make vectorized environment function
@@ -37,7 +38,7 @@ def make_env(gym_id, seed):
                        dynamic_obstacles=True,
                        moving_goal=True,
                        n_goals=1,
-                       wall_split=4)
+                       wall_split=2)
         env = gym.wrappers.RecordEpisodeStatistics(env)
         env.reset(seed=seed)
         env.action_space.seed(seed)
@@ -84,6 +85,15 @@ class Attention(nn.Module):
         out = self.gamma * out + x
         return out
 
+def grad(target_layer, input, model, out_path):
+        gradcam = LayerGradCam(model, target_layer)
+        attributions = gradcam.attribute(input, torch.tensor([1]))
+        attributions_np = attributions.detach().cpu().numpy()
+        print(attributions_np)
+        norm = np.zeros((10, 10))
+        norm = cv2.normalize(attributions_np[0].reshape((10, 10)),  norm, 0, 255, cv2.NORM_MINMAX)
+        cv2.imwrite(out_path, norm)
+
 # Agent model
 class Agent(nn.Module):
     def __init__(self, envs):
@@ -120,12 +130,31 @@ class Agent(nn.Module):
         x = self.conv(x.permute(0, 3, 1, 2))
         return self.critic(x)
     
+       
     def get_action_and_value(self, x, action=None):
+        # target_layer = self.conv[-3]
+        # out_path = 'tempo.png'
+        # grad(target_layer, x.permute(0, 3, 1, 2), self.conv, out_path)
+        # print(x.shape)
+        # og = cv2.resize(x.detach().numpy()[0], (256, 256), interpolation = cv2.INTER_LINEAR)
+        # cv2.imwrite('original.png', og*255)
         x = self.conv(x.permute(0, 3, 1, 2))
-
+        # x2 = self.conv[:-1](x.permute(0, 3, 1, 2))
+        # img = x2.view(1,64,10,10).detach().numpy()
+        # agg = []
+        # for i in range(64):
+        #     agg.append(img[0,i,:,:]*255)
+        # normalizedImg = np.zeros((10, 10))
+        # normalizedImg = cv2.normalize(np.average(agg, axis=0),  normalizedImg, 0, 255, cv2.NORM_MINMAX)
+        # ft = cv2.resize(normalizedImg, (256, 256), interpolation = cv2.INTER_LINEAR)
+        # cv2.imwrite('tempo.png', ft)
         logits = self.actor(x)
         probs = Categorical(logits=logits)
         if action is None:
+            # if np.random.rand() < epsilon:
+            #     action = torch.randint(0, envs.single_action_space.n - 1, size=(x.shape[0],), device=x.device)
+            # else:
+            #     action = probs.sample()
             action = probs.sample()
         return action, probs.log_prob(action), probs.entropy(), self.critic(x)
 

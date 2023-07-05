@@ -12,13 +12,14 @@ import torch.optim as optim
 from torch.distributions import Categorical
 import torch.nn.functional as F
 from torch.autograd import Variable
-
+from emotion import emotion
+from anxiety import anxiety
 
 # Environment parameters
 agent_view_size = 7
-max_steps = 1000
-n_obstacles = 14
-size = 21
+max_steps = 100
+n_obstacles = 7
+size = 10
 agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
@@ -32,10 +33,12 @@ def make_env(gym_id, seed):
                        n_obstacles=n_obstacles,
                        size=size,
                        agent_start_pos=agent_start_pos,
-                       dynamic_wall=False,
+                       dynamic_wall=True,
                        dynamic_goal=True,
                        dynamic_obstacles=True,
-                       moving_goal=True)
+                       moving_goal=True,
+                       n_goals=1,
+                       wall_split=2)
         env = gym.wrappers.RecordEpisodeStatistics(env)
         env.reset(seed=seed)
         env.action_space.seed(seed)
@@ -54,6 +57,19 @@ def layer_inint(layer, std=np.sqrt(2), bias_const=0.0):
     torch.nn.init.orthogonal_(layer.weight, std)
     torch.nn.init.constant_(layer.bias, bias_const)
     return layer
+
+def minmax(score):
+    return (score + 1) / 2
+
+def appraisal_calc(obs=None, logits=None):
+    a1 = motivational_relevance(obs)
+    a2 = novelty(logits)
+    a3 = certainity(logits)
+    # a4 = coping_potential(logits)
+    # a5 = anticipation(logits)
+    # a6 = goal_congruence(logits)
+    app = torch.stack((a1, a2, a3), -1)
+    return app
 
 class Attention(nn.Module):
     def __init__(self, in_dim):
@@ -89,8 +105,8 @@ class Agent(nn.Module):
             nn.Conv2d(16, 32, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
-            nn.ReLU(),
-            Attention(64),
+            # nn.ReLU(),
+            # Attention(64),
             nn.Flatten()
         )
 
@@ -110,6 +126,11 @@ class Agent(nn.Module):
             nn.Tanh(),
             nn.Linear(64, envs.single_action_space.n)
         )
+    def get_appraisal(self, x):
+        xe = self.conv(x.permute(0, 3, 1, 2))
+        app = appraisal_calc(x[:][..., 0], xe)
+        # print(app)
+        return app
 
     def get_value(self, x):
         x = self.conv(x.permute(0, 3, 1, 2))

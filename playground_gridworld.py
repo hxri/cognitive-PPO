@@ -13,7 +13,6 @@ from torch.distributions import Categorical
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-
 # Environment parameters
 agent_view_size = 7
 max_steps = 100
@@ -106,13 +105,16 @@ class Agent(nn.Module):
             nn.Tanh(),
             nn.Linear(64, envs.single_action_space.n)
         )
-
+    
     def get_value(self, x):
         x = self.conv(x.permute(0, 3, 1, 2))
         return self.critic(x)
     
     def get_action_and_value(self, x, epsilon, action=None):
         x = self.conv(x.permute(0, 3, 1, 2))
+        # img = x.view(4,64,10,10).detach().numpy()
+        # for i in range(64):
+        #     cv2.imwrite(str(i) + '_tempo.png', img[0,i,:,:]*255)
 
         logits = self.actor(x)
         probs = Categorical(logits=logits)

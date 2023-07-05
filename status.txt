@@ -1,0 +1,30 @@
+No Appraisal (Baseline)
+=======================================================
+Plays = 23
+Wins = 18
+Average return = 0.6464999914169312
+Average stress level = 0.5775110882413129
+Total Aversions = 111
+Emotion count = {'Anger': 4, 'Disgust': 247, 'Fear': 0, 'Guilt': 399, 'Joy': 3, 'Sadness': 63, 'Shame': 180}
+Score = 0.64428260533706
+
+
+With Appraisal ([0.0, 0.0, 0.0, 0.0, 0.0, 0.0] - 0.01)
+=======================================================
+Plays = 16
+Wins = 13
+Average return = 0.512615442276001
+Average stress level = 0.46047736033871656
+Total Aversions = 122
+Emotion count = {'Anger': 16, 'Disgust': 161, 'Fear': 0, 'Guilt': 223, 'Joy': 3, 'Sadness': 64, 'Shame': 429}
+Score = 0.6145000234246254
+
+With Appraisal (App_loss = Mean | 0.10)
+=======================================================
+Plays = 16
+Wins = 13
+Average return = 0.512615442276001
+Average stress level = 0.46047736033871656
+Total Aversions = 122
+Emotion count = {'Anger': 16, 'Disgust': 161, 'Fear': 0, 'Guilt': 223, 'Joy': 3, 'Sadness': 64, 'Shame': 429}
+Score = 0.6145000234246254

@@ -116,15 +116,14 @@ class Agent(nn.Module):
 
         input_shape = (agent_view_size + 3, agent_view_size + 3)
         self.critic = nn.Sequential(
-            nn.Linear(64*input_shape[0]*input_shape[1] + 6, 256),
+            nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
             nn.Linear(64, 1),
-            nn.Tanh()
         )
         self.actor = nn.Sequential(
-            nn.Linear(64*input_shape[0]*input_shape[1] + 6, 256),
+            nn.Linear(64*input_shape[0]*input_shape[1], 256),
             nn.Tanh(),
             nn.Linear(256, 64),
             nn.Tanh(),
@@ -136,7 +135,6 @@ class Agent(nn.Module):
             nn.Linear(16, 8),
             nn.Tanh(),
             nn.Linear(8, 1),
-            nn.Tanh()
         )
 
     def get_appraisal(self, x, temp, sts):
@@ -444,7 +442,7 @@ if __name__ == "__main__":
                 print("Not found GC")
             
             rw = torch.tensor(reward).to(device).view(-1)
-            rewards[step] = rw - 0.1 * (app[:, 2]) # (0.1 * (1-app[:, 0]) + 0.1 * (cp[step])) # - 0.1 * (1-cp[step]) - 0.1 * (app[0][1])
+            rewards[step] = rw # - 0.1 * app[:, 1] # - 0.1 * (1-cp[step]) - 0.1 * (app[0][1])
             # anti[step] = (rewards[step] -  ((values[step] + 1)/2))
             anti[step] = 1 - torch.abs(rewards[step] -  n_rewards[step])
             app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
@@ -582,7 +580,7 @@ if __name__ == "__main__":
                 if(args.monitor_only):
                     loss = pg_loss - args.ent_coef * entropy_loss + args.vf_coef * v_loss
                 else:
-                    loss = pg_loss - args.ent_coef * entropy_loss + args.vf_coef * v_loss + 0.01 * nre_loss# + 0.01 * appraisal_loss # + 0.1 * sts_loss
+                    loss = pg_loss - args.ent_coef * entropy_loss + args.vf_coef * v_loss + 0.01 * nre_loss # + 0.01 * appraisal_loss # + 0.1 * sts_loss
                 optimizer.zero_grad()
                 loss.backward()
                 # app_loss.backward()

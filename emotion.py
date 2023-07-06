@@ -64,11 +64,11 @@ def stress(app):
     for i in range(len(app)):
         R,N,C,G,P,A = app[i].detach().numpy()
         # Define weights for each appraisal variable (you can adjust these weights based on your specific study or domain knowledge)
-        # weights = [0.075, 0.25, 0.25, 0.075, 0.50, 0.075] # [0.2, 0.1, 0.1, 0.2, 0.2, 0.2]
-        # gapp = [R,N,C,G,P,A]
+        weights = [0.25, 0.05, 0.1, 0.2, 0.35, 0.05] # [0.2, 0.1, 0.1, 0.2, 0.2, 0.2]
+        gapp = [1-R,1-N,1-C,1-G,1-P,1-A]
         # Calculate the stress level
-        # stress_level.append(sum([a*b for a,b in zip(gapp, weights)]))
-        st = (0.8 * (P) - 0.2 * (R + N + A + G + C))
-        st_level = (st + 0.8) / 2.4
-        stress_level.append(st_level)
+        stress_level.append(sum([a*b for a,b in zip(gapp, weights)]))
+        # st = (0.8 * (P) - 0.2 * (R + N + A + G + C))
+        # st_level = (st + 0.8) / 2.4
+        # stress_level.append(st_level)
     return np.average(stress_level)

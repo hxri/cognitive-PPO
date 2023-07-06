@@ -21,7 +21,7 @@ from emotion import stress, emo_app, norm_app, stress
 agent_view_size = 7
 max_steps = 100
 n_obstacles = 7
-size = 14
+size = 10
 agent_start_pos = None  # Dynamic start position
 
 # Make vectorized environment function
@@ -369,7 +369,7 @@ if __name__ == "__main__":
             
             # print(np.average(reward))
             rw = torch.tensor(reward).to(device).view(-1)
-            rewards[step] = rw - 0.1 * (1-cp[step]) # (0.1 * (1-app[:, 0]) + 0.1 * (cp[step])) # - 0.1 * (1-cp[step]) - 0.1 * (app[0][1])
+            rewards[step] = rw # - 0.1 * app[:, 1] # (0.1 * (1-app[:, 0]) + 0.1 * (cp[step])) # - 0.1 * (1-cp[step]) - 0.1 * (app[0][1])
             anti[step] = 1 - torch.abs(rewards[step] -  n_rewards[step])
             app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
             # print(app)

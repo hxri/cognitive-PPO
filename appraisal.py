@@ -18,8 +18,8 @@ def motivational_relevance(obs):
         idx, goal_pos = goal[0], goal[1:]
         dist = torch.norm(agent_pos[idx] - goal_pos.float(), 1)
         relevance[idx] = 1 - (dist - 1) / (2 * (w - 1))
-    norm = relevance # 1/(1+torch.exp(relevance))
-    return norm
+    # norm = relevance # 1/(1+torch.exp(relevance))
+    return relevance
 
 def novelty(logits):
     """Computes novelty according to the KL Divergence from perfect uncertainty.

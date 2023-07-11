@@ -263,9 +263,10 @@ class DynamicObstaclesEnv(MiniGridEnv):
         
         for i_goal in range(len(self.goals)):
             if super().agent_sees(self.goals[i_goal].cur_pos[0], self.goals[i_goal].cur_pos[1]):
+                fra = np.linalg.norm(np.array((0,0)) - np.array(((self.agent_view_size-1)/2,self.agent_view_size)))
                 p1 = np.array((self.goals[i_goal].cur_pos[0], self.goals[i_goal].cur_pos[1]))
                 p2 = np.array(self.agent_pos)
-                gc = 1 - (np.linalg.norm(p1 - p2) / 12.73)
+                gc = 1 - (np.linalg.norm(p1 - p2) / fra) 
             else:
                 gc = 0
         # print("Goal congruence: {}" .format(gc))
@@ -278,6 +279,6 @@ class DynamicObstaclesEnv(MiniGridEnv):
         
         info['goal_congruence'] = gc
         info['coping_potential'] = cp
-
+        info['agent_pos'] = self.agent_pos
         # print(gc, cp, reward)
         return obs, reward, terminated, truncated, info

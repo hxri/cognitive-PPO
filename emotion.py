@@ -48,6 +48,28 @@ def emo_app(app):
     with open('emotion_estimator.pkl', 'rb') as f:
         emo_clf = pickle.load(f)
     # normapp = [R, minmax_val(N, 0.0111, 4.10), minmax_val(C, 0.000, 1.00), G, P, minmax_val(A, 0.0402, 0.5072)]
+    R = (R-0.530971)/0.407309
+    N = (N-0.772037)/0.110288
+    C = (C-0.106702)/0.133804
+    G = (G-0.425943)/0.345998
+    P = (P-0.629762)/0.258976
+    A = (A-0.938952)/0.127975
+
+    # if(R > 4.956353e-17 and C > -2.379049e-17 and G < 1.467080e-16 and P < -6.740640e-17 and A < -6.938894e-18):
+    #     print("Angry")
+    # if(N > 4.956353e-17 and C < -2.379049e-17 and P < -6.740640e-17 and R < 4.956353e-17):
+    #     print("Disgust")
+    # if(N > 4.956353e-17 and C > -2.379049e-17 and P < -6.740640e-17 and G < 1.467080e-16):
+    #     print("Fear")
+    # if(C < -2.379049e-17 and P < -6.740640e-17 and G > 1.467080e-16 and A > -6.938894e-18):
+    #     print("Guilt")
+    # if(P > -6.740640e-17 and G > 1.467080e-16 and R > 4.956353e-17):
+    #     print("Joy")
+    # if(P < -6.740640e-17 and G < 1.467080e-16 and R < 4.956353e-17):
+    #     print("Sadness")
+    # if(P < -6.740640e-17 and C > -2.379049e-17 and A < -6.938894e-18):
+    #     print("Shame")
+
     normapp = [R,N,C,G,P,A]
     return emo_dict[emo_clf.predict([normapp])[0]]
 

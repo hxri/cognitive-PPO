@@ -15,6 +15,8 @@ from appraisal import motivational_relevance, novelty, certainity
 import matplotlib.pyplot as plt
 from collections import deque
 from emotion import stress, emo_app, norm_app, stress
+from collections import Counter
+import cv2
 
 
 # Environment parameters
@@ -31,7 +33,7 @@ def make_env(gym_id, seed):
         env = gym.make(gym_id,
                        render_mode="human",
                        max_steps=max_steps,
-                       agent_view_size=agent_view_size,
+                       agent_view_size=agent_view_size, 
                        n_obstacles=n_obstacles,
                        size=size,
                        agent_start_pos=agent_start_pos,
@@ -45,7 +47,7 @@ def make_env(gym_id, seed):
         env = gym.wrappers.RecordEpisodeStatistics(env)
         env.reset(seed=seed)
         env.action_space.seed(seed)
-        env.observation_space.seed(seed)
+        env.observation_space.seed(seed) 
         return env
     return thunk
 
@@ -79,9 +81,6 @@ def appraisal_calc(obs=None, logits=None):
     a1 = motivational_relevance(obs)
     a2 = novelty(logits)
     a3 = certainity(logits)
-    # a4 = coping_potential(logits)
-    # a5 = anticipation(logits)
-    # a6 = goal_congruence(logits)
     app = torch.stack((a1, a2, a3), -1)
     return app
 
@@ -135,39 +134,37 @@ class Agent(nn.Module):
         input_shape = (agent_view_size + 3, agent_view_size + 3)
         self.critic = nn.Sequential(
             nn.Linear(64*input_shape[0]*input_shape[1] + 6, 256),
-            nn.Tanh(),
+            nn.ReLU(),
             nn.Linear(256, 64),
-            nn.Tanh(),
+            nn.ReLU(),
             nn.Linear(64, 1),
-            nn.Tanh()
         )
         self.actor = nn.Sequential(
-            nn.Linear(64*input_shape[0]*input_shape[1] + 6, 256),
-            nn.Tanh(),
+            nn.Linear(64*input_shape[0]*input_shape[1] + 0, 256),
+            nn.ReLU(),
             nn.Linear(256, 64),
-            nn.Tanh(),
+            nn.ReLU(),
             nn.Linear(64, envs.single_action_space.n)
         )
         self.NRE = nn.Sequential(
-            nn.Linear(envs.single_action_space.n, 16),
-            nn.Tanh(),
-            nn.Linear(16, 8),
-            nn.Tanh(),
-            nn.Linear(8, 1),
-            nn.Tanh()
+            nn.Linear(64*input_shape[0]*input_shape[1] + envs.single_action_space.n, 256),
+            nn.ReLU(),
+            nn.Linear(256, 64),
+            nn.ReLU(),
+            nn.Linear(64, 1),
         )
 
-    def get_appraisal(self, x, temp, sts):
-        xe = self.conv(x.permute(0, 3, 1, 2))
-        if(args.monitor_only):
-            app = appraisal_calc(x[:][..., 0], self.actor(xe))
-        else:
-            # temp = torch.cat([temp, sts], dim=-1)
-            # x2 = torch.mean((xe.unsqueeze(2) * temp.unsqueeze(1)), dim=2)
-            # xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
-            xe = torch.cat([xe, temp], dim=-1)
-            app = appraisal_calc(x[:][..., 0], self.actor(xe))
-        return app
+    # def get_appraisal(self, x, temp, sts):
+    #     x1 = self.conv(x.permute(0, 3, 1, 2))
+    #     if(args.monitor_only):
+    #         app = appraisal_calc(x[:][..., 0], self.actor(x1))
+    #     else:
+    #         # temp = torch.cat([temp, sts], dim=-1)
+    #         # x2 = torch.mean((xe.unsqueeze(2) * temp.unsqueeze(1)), dim=2)
+    #         # xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
+    #         xe = torch.cat([x1, temp], dim=-1)
+    #         app = appraisal_calc(x[:][..., 0], self.actor(x1))
+    #     return app
 
     def get_value(self, x, appraisal, sts):
         x1 = self.conv(x.permute(0, 3, 1, 2))
@@ -178,12 +175,12 @@ class Agent(nn.Module):
             # x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
             # xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
             xe = torch.cat([x1, appraisal], dim=-1)
-        cr = self.actor(xe)
-        napp = appraisal_calc(x[:][..., 0], cr)
-        return self.critic(xe), napp
+        cr = self.actor(x1)
+        return self.critic(xe)
             
     def get_action_and_value(self, x, appraisal, sts, action=None):
         x1 = self.conv(x.permute(0, 3, 1, 2))
+        # print(torch.min(x1))
         if(args.monitor_only):
             xe = x1
         else:
@@ -191,13 +188,12 @@ class Agent(nn.Module):
             # x2 = torch.mean((x1.unsqueeze(2) * appraisal.unsqueeze(1)), dim=2)
             # xe = (x2 - torch.min(x2)) / (torch.max(x2) - torch.min(x2))
             xe = torch.cat([x1, appraisal], dim=-1)
-        logits = self.actor(xe)
-        napp = appraisal_calc(x[:][..., 0], self.actor(xe))  
+        logits = self.actor(x1)
         probs = Categorical(logits=logits)
         if action is None:
             action = probs.sample()
-        n_reward = self.NRE(logits).squeeze(1)
-        return action, probs.log_prob(action), probs.entropy(), self.critic(xe), napp, n_reward
+        n_reward = self.NRE(torch.cat([x1, logits], dim=-1)).squeeze(1)
+        return action, probs.log_prob(action), probs.entropy(), self.critic(xe), n_reward, logits
 
 
 # Arguments
@@ -311,10 +307,10 @@ if __name__ == "__main__":
                           torch.tensor([[0.1]]),
                           torch.tensor([[0.1]]),
                           torch.tensor([[0.1]]),
-                          torch.tensor([[0.1]])), dim=1)
+                          torch.tensor([[0.1]]),), dim=1)
     next_sts = torch.tensor([[0.1]])
-    next_appraisal = torch.tensor(agent.get_appraisal(next_obs, temp_app, next_sts))
-    next_appraisal = torch.cat((next_appraisal, torch.tensor([[0.1]]), torch.tensor([[0.1]]), torch.tensor([[0.1]])), dim=1)
+    # next_appraisal = torch.tensor(agent.get_appraisal(next_obs, temp_app, next_sts))
+    next_appraisal = temp_app # torch.cat((next_appraisal, torch.tensor([[0.1]]), torch.tensor([[0.1]]), torch.tensor([[0.1]])), dim=1)
 
     return_arr = []
     gc_prev = 0
@@ -325,6 +321,9 @@ if __name__ == "__main__":
     sts_arr = []
     aversions = []
     act_arr = []
+    action_arr = []
+    agent_pos_arr = []
+    app_data = []
 
     for update in range(1, num_updates + 1):
         start_time = time.time()
@@ -334,17 +333,17 @@ if __name__ == "__main__":
             global_step += 1 * args.num_envs
             obs[step] = next_obs
             dones[step] = next_done
-            # print(envs.window)
-
             # Action logic
             with torch.no_grad():
-                action, logprob, _, value, app, n_reward = agent.get_action_and_value(next_obs, next_appraisal, next_sts)
+                action, logprob, _, value, n_reward, logits = agent.get_action_and_value(next_obs, next_appraisal, next_sts)
                 # print(action)
                 values[step] = value.flatten()
             actions[step] = action
             act_arr.append(action.detach().numpy()[0])
+            action_arr.append(action.detach().numpy()[0])
             logprobs[step] = logprob
             n_rewards[step] = n_reward
+            app = appraisal_calc(next_obs[:][..., 0], logits)
             # appraisals[step] = app
             # mot_rel = torch.stack([item[0] for item in app])
             # nov = torch.stack([item[1] for item in app])normminmax_val
@@ -352,6 +351,10 @@ if __name__ == "__main__":
             # Ty not to modify: execute game and log data
             next_obs, reward, terminated, truncated, info = envs.step(action.cpu().numpy())
             base_rw = torch.tensor(reward).to(device).view(-1)
+
+            if('agent_pos' in info):
+                agent_pos_arr.append(info['agent_pos'][0])
+
             if('final_info' in info):
                 if('goal_congruence' in info['final_info'][0]):
                     gc[step] = torch.tensor(info['final_info'][0]['goal_congruence'])
@@ -369,16 +372,22 @@ if __name__ == "__main__":
             
             # print(np.average(reward))
             rw = torch.tensor(reward).to(device).view(-1)
-            rewards[step] = rw # - 0.1 * app[:, 1] # (0.1 * (1-app[:, 0]) + 0.1 * (cp[step])) # - 0.1 * (1-cp[step]) - 0.1 * (app[0][1])
-            anti[step] = 1 - torch.abs(rewards[step] -  n_rewards[step])
+            rewards[step] = rw - (0.01 * (1-app[:, 0])) - (0.1 * (1-gc[step])) # - 0.1 * (1-app[:, 0]) #- 0.01 * ((1-gc[step]) + (1-app[:, 0])) # (0.1 * (1-app[:, 0]) + 0.1 * (cp[step])) # - 0.1 * (1-cp[step]) - 0.1 * (app[0][1])
+            if(step == 0):
+                anti[step] = 1 - torch.abs(rewards[step] -  0)
+            else:
+                anti[step] = 1 - torch.abs(rewards[step] -  n_rewards[step-1])
             app = torch.cat((app, gc[step].unsqueeze(1), cp[step].unsqueeze(1), anti[step].unsqueeze(1)), dim=1)
-            # print(app)
+            app_data.append(app.detach().numpy()[0])
             stress_level.append(stress(app))
             sts_arr.append(stress(app))
             sts[step] = stress(app)
             next_sts = sts[step]
             appraisals[step] = app
             next_appraisal = app
+
+            # print(emo_app(app[0]), app)
+                  
             emotion_arr.append(emo_app(app[0]))
         
             next_obs, next_done = torch.Tensor(next_obs['image']).to(device), torch.Tensor(terminated).to(device)
@@ -402,6 +411,7 @@ if __name__ == "__main__":
     print("Average return = {}" .format(np.average(list(filter(lambda a: a != -1.0, return_arr)))))
     print("Average stress level = {}" .format(np.average(sts_arr)))
     print("Total Aversions = {}" .format(np.sum(aversions)))
+    print("Action Frequency = {}" .format(Counter(action_arr)))
     occurrences = count_string_occurrences(emotion_arr)
     emos = {'Anger': 0, 'Disgust': 0, 'Fear': 0, 'Guilt': 0, 'Joy': 0, 'Sadness': 0, 'Shame': 0}
     for string, count in occurrences.items():
@@ -409,4 +419,13 @@ if __name__ == "__main__":
     print("Emotion count = {}" .format(emos))
     avg_r = np.average(list(filter(lambda a: a != -1.0, return_arr)))
     print("Score = {}" .format(minmax(((wins * avg_r) + (losses * -1))/len(return_arr))))
+
+    grid = np.zeros((10,10))
+    for i in agent_pos_arr:
+        grid[i[0], i[1]] += 1 
+    cv2.imwrite(f'runs/{args.gym_id}__{args.exp_name}/agent_roi.png', cv2.resize(cv2.normalize(grid, 0, 255, cv2.NORM_MINMAX), (256, 256), interpolation = cv2.INTER_AREA))
+
+    import pandas as pd
+    df = pd.DataFrame(app_data)
+    df.to_csv('temp.csv')
     envs.close()
